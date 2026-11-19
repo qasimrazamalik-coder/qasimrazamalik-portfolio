@@ -1,4 +1,5 @@
-export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://qasimrazamalik.site').replace(/\/$/, '');
+// Switch to https://qasimrazamalik.site (env NEXT_PUBLIC_SITE_URL on Vercel) once the domain's DNS points here.
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://qasimrazamalik-portfolio.vercel.app').replace(/\/$/, '');
 
 export const profile = {
   name: 'Qasim Raza Malik',

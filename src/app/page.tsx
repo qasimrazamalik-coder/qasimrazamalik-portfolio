@@ -139,8 +139,9 @@ export default async function Home() {
               {profile.availability}
             </p>
             <h1 className="max-w-6xl text-[clamp(2.8rem,8.4vw,8.5rem)] font-medium leading-[0.92] tracking-[-0.045em]">
-              <span className="block" data-split>Qasim Raza Malik</span>
-              <span className="block font-serif font-normal italic tracking-[-0.02em] text-glacier" data-split>builds proof,</span>
+              <span className="block" data-split>Qasim Raza Malik</span>{' '}
+              <span className="sr-only">— AI & Backend Engineer —</span>{' '}
+              <span className="block font-serif font-normal italic tracking-[-0.02em] text-glacier" data-split>builds proof,</span>{' '}
               <span className="block text-snow/80" data-split>not promises.</span>
             </h1>
             <div className="mt-10 grid gap-8 md:grid-cols-[1.2fr_1fr] md:items-end">
