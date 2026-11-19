@@ -72,16 +72,28 @@ export function Experience() {
     const ctx = gsap.context(() => {
       if (reduced) return;
       /* split-line headline reveals */
-      document.querySelectorAll<HTMLElement>('[data-split]').forEach((el) => {
-        const split = SplitText.create(el, { type: 'lines,words', linesClass: 'split-line', mask: 'lines' });
-        gsap.from(split.words, {
-          yPercent: 110,
-          duration: 1.1,
-          ease: 'expo.out',
-          stagger: 0.03,
-          scrollTrigger: { trigger: el, start: 'top 88%' },
-        });
-      });
+      // split only after web fonts load, and re-split on resize, so line breaks match the final layout
+      document.fonts.ready.then(() =>
+        ctx.add(() => {
+          document.querySelectorAll<HTMLElement>('[data-split]').forEach((el) => {
+            SplitText.create(el, {
+              type: 'lines,words',
+              linesClass: 'split-line',
+              mask: 'lines',
+              autoSplit: true,
+              onSplit: (self) =>
+                gsap.from(self.words, {
+                  yPercent: 110,
+                  duration: 1.1,
+                  ease: 'expo.out',
+                  stagger: 0.03,
+                  scrollTrigger: { trigger: el, start: 'top 88%' },
+                }),
+            });
+          });
+          ScrollTrigger.refresh();
+        })
+      );
       /* fade-up blocks */
       gsap.utils.toArray<HTMLElement>('[data-reveal]').forEach((el) => {
         gsap.from(el, { y: 40, opacity: 0, duration: 1, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 90%' } });
