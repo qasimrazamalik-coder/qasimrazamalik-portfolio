@@ -1,4 +1,4 @@
-import { SITE_URL, about, experience, faqs, profile } from '@/content/profile';
+import { SITE_URL, about, aiTools, capabilities, experience, faqs, lenses, profile, ventures } from '@/content/profile';
 import { projects, tracks } from '@/content/projects';
 
 export const dynamic = 'force-static';
@@ -18,7 +18,17 @@ export function GET() {
     `- Location: ${profile.location} (${profile.timezone})`,
     '',
     '## Experience',
-    ...experience.map((e) => `- ${e.role}, ${e.org} (${e.type}, ${e.period})`),
+    ...experience.map((e) => `- ${e.role}, ${e.org} (${e.period})`),
+    '',
+    '## Ventures',
+    ...ventures.map((v) => `- ${v.name} — ${v.role}: ${v.summary}${v.url ? ` (${v.url})` : ''}`),
+    '',
+    '## AI engineering',
+    ...capabilities.map((c) => `- ${c.title}: ${c.body}`),
+    `- AI tools: ${aiTools.join(', ')}`,
+    '',
+    '## Snapchat Lenses',
+    ...lenses.groups.map((g) => `- ${g.title}: ${g.items.join(', ')}`),
     '',
     ...tracks.flatMap((t) => [
       `## ${t.label}`,

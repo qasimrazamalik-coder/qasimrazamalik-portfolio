@@ -3,7 +3,7 @@ import './globals.css';
 import { SITE_URL, profile } from '@/content/profile';
 
 const description =
-  'Qasim Raza Malik — AI & backend engineer from Pakistan. Race-tested Node.js and PostgreSQL APIs, benchmarked applied AI, and interactive 3D web experiences with React, Three.js and GSAP.';
+  'Qasim Raza Malik — AI & backend engineer and co-founder of Primeura. RAG chatbots, AI agents, MCP servers and computer vision; race-tested Node.js APIs; React, Next.js, HTML and WordPress websites.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -14,7 +14,8 @@ export const metadata: Metadata = {
   creator: profile.name,
   keywords: [
     'Qasim Raza Malik', 'AI engineer Pakistan', 'backend engineer', 'full-stack developer', 'React developer', 'TypeScript',
-    'Node.js', 'PostgreSQL', 'Three.js portfolio', 'machine learning engineer', 'RAG', 'QLoRA', 'Abbottabad', 'remote developer',
+    'Node.js', 'PostgreSQL', 'Three.js portfolio', 'machine learning engineer', 'RAG chatbot developer', 'AI agents', 'MCP server',
+    'computer vision', 'WordPress developer Pakistan', 'HTML developer', 'Primeura Digital Solutions', 'Snapchat Lens creator', 'Abbottabad', 'remote developer',
   ],
   alternates: { canonical: '/' },
   openGraph: {

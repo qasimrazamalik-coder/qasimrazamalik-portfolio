@@ -1,19 +1,24 @@
-import { SITE_URL, about, clients, education, experience, faqs, profile, stack } from '@/content/profile';
+import Image from 'next/image';
+import { SITE_URL, about, aiTools, capabilities, clients, education, experience, faqs, lenses, profile, roles, socials, stack, techIcons, ventures } from '@/content/profile';
 import { featured, projects, tracks } from '@/content/projects';
 import { getRepos } from '@/lib/github';
 import { Experience } from '@/components/ui/Experience';
 import { CommandPalette, PaletteButton, type Command } from '@/components/ui/CommandPalette';
 import { WorkExplorer } from '@/components/sections/WorkExplorer';
 import { ContactForm } from '@/components/sections/ContactForm';
+import { Arcade } from '@/components/sections/Arcade';
+import { ChatLauncher } from '@/components/ui/ChatBot';
 
 export const revalidate = 21600;
 
 const nav = [
+  { href: '#ventures', label: 'Ventures' },
   { href: '#work', label: 'Work' },
-  { href: '#explore', label: 'Projects' },
-  { href: '#journey', label: 'Journey' },
+  { href: '#ai', label: 'AI' },
+  { href: '#arcade', label: 'Play' },
   { href: '#contact', label: 'Contact' },
 ];
+const liveSocials = socials.filter((s) => s.url);
 
 function Roll({ children }: { children: string }) {
   return (
@@ -67,11 +72,17 @@ export default async function Home() {
         jobTitle: profile.role,
         description: profile.tagline,
         homeLocation: { '@type': 'Place', name: profile.location },
+        image: `${SITE_URL}${profile.photo}`,
+        telephone: profile.phone,
         worksFor: { '@type': 'Organization', name: 'Digital Experts Dev', url: profile.agency.url },
-        alumniOf: { '@type': 'CollegeOrUniversity', name: 'Abbottabad University of Science and Technology' },
-        knowsAbout: stack.flatMap((s) => s.items),
-        sameAs: [profile.github, profile.linkedin],
+        alumniOf: [
+          { '@type': 'CollegeOrUniversity', name: 'Abbottabad University of Science and Technology' },
+          { '@type': 'CollegeOrUniversity', name: 'COMSATS Institute of Information Technology' },
+        ],
+        knowsAbout: [...stack.flatMap((s) => s.items), ...capabilities.map((c) => c.title), ...aiTools],
+        sameAs: liveSocials.map((s) => s.url),
       },
+      { '@type': 'Organization', '@id': `${SITE_URL}/#primeura`, name: 'Primeura Digital Solutions', url: 'https://primeura.com', areaServed: 'United Arab Emirates', founder: { '@id': `${SITE_URL}/#person` } },
       { '@type': 'WebSite', '@id': `${SITE_URL}/#website`, url: SITE_URL, name: profile.name, publisher: { '@id': `${SITE_URL}/#person` }, inLanguage: 'en' },
       { '@type': 'ProfilePage', '@id': `${SITE_URL}/#profile`, url: SITE_URL, mainEntity: { '@id': `${SITE_URL}/#person` }, isPartOf: { '@id': `${SITE_URL}/#website` } },
       {
@@ -92,6 +103,7 @@ export default async function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
       <Experience />
       <CommandPalette commands={commands} />
+      <ChatLauncher />
 
       {/* header */}
       <header className="fixed inset-x-0 top-0 z-40 before:pointer-events-none before:absolute before:inset-0 before:-bottom-6 before:bg-gradient-to-b before:from-night/95 before:via-night/70 before:to-transparent before:backdrop-blur-md before:[mask-image:linear-gradient(to_bottom,black_55%,transparent)]">
@@ -177,6 +189,15 @@ export default async function Home() {
               <h2 className="mt-6 text-4xl font-medium leading-[1.02] tracking-tight md:text-6xl" data-split>
                 Evidence over adjectives.
               </h2>
+              <div className="group relative mt-10 w-56 md:w-64" data-reveal>
+                <div className="absolute -inset-3 rounded-[2rem] bg-[conic-gradient(from_180deg,#7cf3d6,#ffb454,#9d8cff,#7cf3d6)] opacity-40 blur-2xl transition-opacity duration-700 group-hover:opacity-80" aria-hidden />
+                <Image src={profile.photo} alt={`${profile.name}, AI & backend engineer`} width={460} height={460} priority={false} className="relative aspect-square w-full rounded-[1.75rem] border border-line object-cover grayscale-[35%] transition-[filter,transform] duration-700 group-hover:scale-[1.02] group-hover:grayscale-0" />
+              </div>
+              <ul className="mt-8 flex flex-wrap gap-2" aria-label="Roles">
+                {roles.map((r) => (
+                  <li key={r} className="rounded-full border border-line bg-panel/50 px-3 py-1 text-xs text-snow/90 backdrop-blur">{r}</li>
+                ))}
+              </ul>
             </div>
             <div className="space-y-6 text-lg leading-relaxed text-mist">
               {about.map((p) => (
@@ -191,10 +212,47 @@ export default async function Home() {
           </div>
         </section>
 
+        {/* VENTURES */}
+        <section id="ventures" className="px-5 pb-28 md:px-10 md:pb-40">
+          <div className="mx-auto max-w-7xl">
+            <Eyebrow n="02">Ventures & flagship builds</Eyebrow>
+            <h2 className="mt-6 max-w-4xl text-4xl font-medium leading-[1.02] tracking-tight md:text-6xl" data-split>
+              Companies and products I <em className="font-serif font-normal text-glacier">own.</em>
+            </h2>
+            <div className="mt-14 grid gap-5 md:grid-cols-2">
+              {ventures.map((v, i) => (
+                <article key={v.name} data-tilt className={`spot group relative overflow-hidden rounded-3xl border border-line bg-ink/70 backdrop-blur-md [transform-style:preserve-3d] ${i === 0 ? 'md:col-span-2 md:grid md:grid-cols-[1.1fr_1fr]' : ''}`}>
+                  <div className="relative aspect-[16/10] overflow-hidden border-b border-line md:border-b-0" style={{ background: `radial-gradient(circle at 30% 20%, ${v.accent}33, transparent 60%), #0c0e15` }}>
+                    {v.image ? (
+                      <Image src={v.image} alt={`${v.name} website screenshot`} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover object-top transition-transform duration-[1.2s] ease-out group-hover:scale-[1.04]" />
+                    ) : (
+                      <div className="flex h-full items-center justify-center">
+                        <span className="font-serif text-6xl italic md:text-7xl" style={{ color: v.accent }}>{v.name.split(' ')[0]}</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex flex-col p-6 md:p-8">
+                    <p className="font-mono text-[11px] uppercase tracking-widest" style={{ color: v.accent }}>{v.role}</p>
+                    <h3 className="mt-3 text-2xl font-medium tracking-tight md:text-3xl">{v.name}</h3>
+                    <p className="mt-3 text-mist">{v.summary}</p>
+                    <ul className="mt-4 space-y-1.5 text-sm text-snow/90">
+                      {v.points.map((pt) => (<li key={pt} className="flex gap-3"><span className="mt-2 h-px w-3 shrink-0" style={{ background: v.accent }} />{pt}</li>))}
+                    </ul>
+                    <div className="mt-auto flex flex-wrap items-center justify-between gap-3 pt-6">
+                      <ul className="flex flex-wrap gap-1.5">{v.stack.map((s) => (<li key={s} className="rounded-full border border-line px-2.5 py-0.5 font-mono text-[10px] text-mist">{s}</li>))}</ul>
+                      {v.url && <a href={v.url} target="_blank" rel="noopener noreferrer" data-magnetic className="group/l rounded-full border border-line px-4 py-2 text-sm text-snow hover:border-glacier"><Roll>Visit site ↗</Roll></a>}
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* FEATURED WORK */}
         <section id="work" className="px-5 pb-28 md:px-10 md:pb-40">
           <div className="mx-auto max-w-7xl">
-            <Eyebrow n="02">Selected work</Eyebrow>
+            <Eyebrow n="03">Selected work</Eyebrow>
             <div className="mt-6 flex flex-wrap items-end justify-between gap-6">
               <h2 className="max-w-3xl text-4xl font-medium leading-[1.02] tracking-tight md:text-6xl" data-split>
                 Each project ships with its <em className="font-serif font-normal text-glacier">receipts.</em>
@@ -235,7 +293,7 @@ export default async function Home() {
         {/* EXPLORER */}
         <section id="explore" className="px-5 pb-28 md:px-10 md:pb-40">
           <div className="mx-auto max-w-7xl rounded-[2rem] border border-line bg-night/60 p-6 backdrop-blur-xl md:p-12">
-            <Eyebrow n="03">The full lab</Eyebrow>
+            <Eyebrow n="04">The full lab</Eyebrow>
             <h2 className="mt-6 text-4xl font-medium leading-[1.02] tracking-tight md:text-5xl" data-split>
               {projects.length} projects across six tracks.
             </h2>
@@ -249,7 +307,7 @@ export default async function Home() {
         {(latest.length > 0 || recent.length > 0) && (
           <section id="latest" className="px-5 pb-28 md:px-10 md:pb-40">
             <div className="mx-auto max-w-7xl">
-              <Eyebrow n="04">Live from GitHub</Eyebrow>
+              <Eyebrow n="05">Live from GitHub</Eyebrow>
               <div className="mt-6 flex flex-wrap items-end justify-between gap-6">
                 <h2 className="text-4xl font-medium tracking-tight md:text-5xl" data-split>Fresh off the commit log.</h2>
                 <p className="max-w-sm text-sm text-mist" data-reveal>Pulled from the GitHub API and refreshed every few hours — new public work appears here automatically.</p>
@@ -274,6 +332,75 @@ export default async function Home() {
           </section>
         )}
 
+        {/* AI CAPABILITIES */}
+        <section id="ai" className="px-5 pb-28 md:px-10 md:pb-40">
+          <div className="mx-auto max-w-7xl">
+            <Eyebrow n="06">AI engineering</Eyebrow>
+            <div className="mt-6 flex flex-wrap items-end justify-between gap-6">
+              <h2 className="max-w-3xl text-4xl font-medium leading-[1.02] tracking-tight md:text-6xl" data-split>
+                MCP, agents, LLMs, vision and <em className="font-serif font-normal text-glacier">RAG.</em>
+              </h2>
+              <p className="max-w-sm text-mist" data-reveal>Try the assistant in the corner — it is a retrieval-augmented chatbot over this site, running entirely in your browser.</p>
+            </div>
+            <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {capabilities.map((c, i) => (
+                <article key={c.id} data-tilt className="spot rounded-2xl border border-line bg-ink/70 p-6 backdrop-blur-md [transform-style:preserve-3d]">
+                  <p className="font-mono text-[11px] text-glacier">{String(i + 1).padStart(2, '0')}</p>
+                  <h3 className="mt-4 text-xl font-medium tracking-tight">{c.title}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-mist">{c.body}</p>
+                </article>
+              ))}
+            </div>
+            <div className="mt-10 rounded-2xl border border-line bg-night/60 p-6 backdrop-blur-md">
+              <p className="font-mono text-[11px] uppercase tracking-widest text-mist">AI tools I ship with every day</p>
+              <ul className="mt-4 flex flex-wrap gap-2">
+                {aiTools.map((t) => (
+                  <li key={t} className="group rounded-full border border-line bg-panel/60 px-4 py-2 text-sm text-snow transition-colors hover:border-glacier hover:text-glacier">{t}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        {/* SNAPCHAT LENSES */}
+        <section id="lenses" className="px-5 pb-28 md:px-10 md:pb-40">
+          <div className="mx-auto max-w-7xl rounded-[2rem] border border-line bg-[radial-gradient(circle_at_85%_10%,rgba(255,252,0,0.12),transparent_45%)] bg-night/60 p-6 backdrop-blur-xl md:p-12">
+            <Eyebrow n="07">Snapchat Lenses</Eyebrow>
+            <div className="mt-6 grid gap-10 md:grid-cols-[0.8fr_1.2fr]">
+              <div>
+                <h2 className="text-4xl font-medium leading-[1.02] tracking-tight md:text-5xl" data-split>Lenses & Web Lens games.</h2>
+                <p className="mt-5 text-mist" data-reveal>{lenses.intro}</p>
+                {socials.find((s) => s.label === 'Snapchat')?.url && (
+                  <a href={socials.find((s) => s.label === 'Snapchat')!.url} target="_blank" rel="noopener noreferrer" data-magnetic className="mt-6 inline-flex rounded-full bg-[#fffc00] px-5 py-3 text-sm font-medium text-night">Open on Snapchat ↗</a>
+                )}
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {lenses.groups.map((g) => (
+                  <div key={g.title} className="rounded-2xl border border-line bg-ink/70 p-5">
+                    <h3 className="font-mono text-[11px] uppercase tracking-widest text-[#fffc00]">{g.title}</h3>
+                    <ul className="mt-3 space-y-1.5">
+                      {g.items.map((n) => (<li key={n} className="flex items-center gap-2 text-snow/90"><span className="h-1.5 w-1.5 rounded-full bg-[#fffc00]" aria-hidden />{n}</li>))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ARCADE */}
+        <section id="arcade" className="px-5 pb-28 md:px-10 md:pb-40">
+          <div className="mx-auto max-w-7xl">
+            <Eyebrow n="08">Arcade</Eyebrow>
+            <h2 className="mt-6 text-4xl font-medium leading-[1.02] tracking-tight md:text-6xl" data-split>
+              Take a <em className="font-serif font-normal text-glacier">break.</em>
+            </h2>
+            <div className="mt-12 rounded-[2rem] border border-line bg-night/60 p-6 backdrop-blur-xl md:p-12">
+              <Arcade />
+            </div>
+          </div>
+        </section>
+
         {/* STACK MARQUEE */}
         <section aria-label="Tech stack" className="marquee-wrap overflow-hidden border-y border-line bg-ink/60 py-6 backdrop-blur">
           <div className="marquee">
@@ -293,7 +420,7 @@ export default async function Home() {
         <section id="journey" className="px-5 py-28 md:px-10 md:py-40">
           <div className="mx-auto grid max-w-7xl gap-14 md:grid-cols-[0.8fr_1.2fr]">
             <div className="md:sticky md:top-28 md:self-start">
-              <Eyebrow n="05">The climb</Eyebrow>
+              <Eyebrow n="09">The climb</Eyebrow>
               <h2 className="mt-6 text-4xl font-medium leading-[1.02] tracking-tight md:text-6xl" data-split>Experience & education.</h2>
               <ul className="mt-10 space-y-4">
                 {education.map((e) => (
@@ -309,9 +436,12 @@ export default async function Home() {
               {experience.map((x) => (
                 <li key={x.org + x.role} className="relative pb-12 last:pb-0" data-reveal>
                   <span className="absolute -left-[37px] top-1.5 h-3 w-3 rounded-full border-2 border-glacier bg-night" aria-hidden />
-                  <p className="font-mono text-[11px] uppercase tracking-widest text-mist">{x.period} · {x.type} · {x.place}</p>
+                  <p className="font-mono text-[11px] uppercase tracking-widest text-mist">{[x.period, x.type, x.place].filter((v, i, a) => a.indexOf(v) === i).join(' · ')}</p>
                   <h3 className="mt-2 text-2xl font-medium tracking-tight">{x.role}</h3>
-                  <p className="text-glacier">{x.org}</p>
+                  <p className="flex items-center gap-2 text-glacier">
+                    {x.logo && <Image src={x.logo} alt="" width={24} height={24} className="h-6 w-6 rounded-md bg-snow object-contain p-0.5" />}
+                    {x.org}
+                  </p>
                   <ul className="mt-4 space-y-1.5 text-mist">
                     {x.points.map((pt) => (
                       <li key={pt} className="flex gap-3"><span className="mt-2.5 h-px w-3 shrink-0 bg-line" />{pt}</li>
@@ -326,8 +456,15 @@ export default async function Home() {
         {/* STACK GRID */}
         <section id="stack" className="px-5 pb-28 md:px-10 md:pb-40">
           <div className="mx-auto max-w-7xl">
-            <Eyebrow n="06">Toolbox</Eyebrow>
-            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <Eyebrow n="10">Toolbox</Eyebrow>
+            <ul className="mt-8 flex flex-wrap items-center gap-3" aria-label="Core technologies">
+              {techIcons.map((t) => (
+                <li key={t.name} title={t.name} className="group flex h-14 w-14 items-center justify-center rounded-2xl border border-line bg-panel/60 backdrop-blur transition-transform duration-300 hover:-translate-y-1 hover:border-glacier">
+                  <Image src={t.src} alt={t.name} width={32} height={32} className="h-8 w-8 object-contain transition-transform duration-500 group-hover:rotate-[8deg] group-hover:scale-110" />
+                </li>
+              ))}
+            </ul>
+            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {stack.map((s) => (
                 <div key={s.group} data-tilt className="spot rounded-2xl border border-line bg-ink/60 p-6 backdrop-blur-md [transform-style:preserve-3d]">
                   <h3 className="font-mono text-[11px] uppercase tracking-widest text-glacier">{s.group}</h3>
@@ -345,14 +482,30 @@ export default async function Home() {
         {/* CLIENTS */}
         <section id="clients" className="px-5 pb-28 md:px-10 md:pb-40">
           <div className="mx-auto max-w-7xl">
-            <Eyebrow n="07">Client builds</Eyebrow>
+            <Eyebrow n="11">Client builds</Eyebrow>
             <h2 className="mt-6 max-w-3xl text-4xl font-medium tracking-tight md:text-5xl" data-split>Websites for real businesses.</h2>
-            <ul className="mt-10 grid gap-px overflow-hidden rounded-3xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
-              {clients.map((c) => (
-                <li key={c.name} className="group bg-ink/80 p-6 backdrop-blur transition-colors hover:bg-panel/80">
-                  <p className="text-xl tracking-tight text-snow transition-transform duration-500 group-hover:translate-x-1">{c.name}</p>
+            <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {clients.filter((c) => c.image).map((c) => (
+                <li key={c.name}>
+                  <a href={c.url} target="_blank" rel="noopener noreferrer" data-cursor="view" data-cursor-label="Visit" className="group block overflow-hidden rounded-2xl border border-line bg-ink/80 backdrop-blur transition-colors hover:border-glacier/40">
+                    <div className="relative aspect-[16/10] overflow-hidden">
+                      <Image src={c.image!} alt={`${c.name} website`} fill sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" className="object-cover object-top transition-transform duration-[1.2s] ease-out group-hover:scale-105" />
+                    </div>
+                    <div className="p-5">
+                      <p className="text-lg tracking-tight text-snow"><Roll>{c.name}</Roll></p>
+                      <p className="mt-1 text-sm text-mist">{c.what}</p>
+                      <p className="mt-3 font-mono text-[10px] uppercase tracking-widest text-mist">{c.tags.join(' · ')}</p>
+                    </div>
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <ul className="mt-4 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+              {clients.filter((c) => !c.image).map((c) => (
+                <li key={c.name} className="bg-ink/80 p-5 backdrop-blur">
+                  <p className="text-snow">{c.name}</p>
                   <p className="mt-1 text-sm text-mist">{c.what}</p>
-                  <p className="mt-4 font-mono text-[10px] uppercase tracking-widest text-mist">{c.tags.join(' · ')}</p>
+                  <p className="mt-3 font-mono text-[10px] uppercase tracking-widest text-mist">{c.tags.join(' · ')}</p>
                 </li>
               ))}
             </ul>
@@ -363,7 +516,7 @@ export default async function Home() {
         <section id="faq" className="px-5 pb-28 md:px-10 md:pb-40">
           <div className="mx-auto grid max-w-7xl gap-12 md:grid-cols-[0.8fr_1.2fr]">
             <div>
-              <Eyebrow n="08">Quick answers</Eyebrow>
+              <Eyebrow n="12">Quick answers</Eyebrow>
               <h2 className="mt-6 text-4xl font-medium tracking-tight md:text-5xl" data-split>FAQ</h2>
             </div>
             <div className="divide-y divide-line border-y border-line">
@@ -383,16 +536,18 @@ export default async function Home() {
         {/* CONTACT */}
         <section id="contact" className="px-5 pb-20 md:px-10">
           <div className="mx-auto max-w-7xl overflow-hidden rounded-[2rem] border border-line bg-night/70 p-6 backdrop-blur-xl md:p-14">
-            <Eyebrow n="09">Summit</Eyebrow>
+            <Eyebrow n="13">Summit</Eyebrow>
             <div className="mt-8 grid gap-12 md:grid-cols-2">
               <div>
                 <h2 className="text-5xl font-medium leading-[0.95] tracking-[-0.04em] md:text-7xl" data-split>
                   Let’s build something <em className="font-serif font-normal text-glacier">provable.</em>
                 </h2>
                 <a href={`mailto:${profile.email}`} className="sweep mt-8 inline-block break-all text-lg text-snow md:text-xl">{profile.email}</a>
-                <div className="mt-6 flex gap-5 text-sm text-mist">
-                  <a className="sweep hover:text-snow" href={profile.github} target="_blank" rel="noopener noreferrer">GitHub</a>
-                  <a className="sweep hover:text-snow" href={profile.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <p className="mt-3 text-mist">{profile.phone}</p>
+                <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm text-mist">
+                  {liveSocials.map((s) => (
+                    <a key={s.label} className="sweep hover:text-snow" href={s.url} target="_blank" rel="noopener noreferrer me">{s.label}</a>
+                  ))}
                   <a className="sweep hover:text-snow" href={profile.company.url} target="_blank" rel="noopener noreferrer">Primeura</a>
                 </div>
               </div>
