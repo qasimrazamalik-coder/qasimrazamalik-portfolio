@@ -223,16 +223,23 @@ export const ventures: Venture[] = [
   },
 ];
 
-export type Client = { name: string; what: string; tags: string[]; url?: string; image?: string };
+export type Client = { name: string; what: string; tags: string[]; url?: string; image: string; live?: string };
 
 export const clients: Client[] = [
-  { name: 'Glamur Paints', what: 'Paint storefront and ordering', tags: ['React', 'MongoDB', 'Stripe'], url: 'https://www.glamurpaints.com/', image: '/img/shots/glamur.jpg' },
-  { name: 'Replica Copy Industries', what: 'Printing, signage and branding company', tags: ['WordPress', 'PHP'], url: 'https://replicacopyindustries.com/', image: '/img/shots/replica.jpg' },
+  { name: 'Glamur Paints', what: 'Paint storefront with product explorer and ordering', tags: ['React', 'MongoDB', 'Stripe'], url: 'https://www.glamurpaints.com/', image: '/img/shots/glamur-mock.jpg', live: '/img/shots/glamur.jpg' },
+  { name: 'Kennett Kreamery', what: 'Playful ice-cream brand site with bulk ordering', tags: ['Custom WordPress', 'PHP'], image: '/img/shots/kennett-mock.jpg' },
+  { name: 'Literary Publishers', what: 'Publishing platform that turns manuscripts into books', tags: ['React', 'EmailJS'], url: 'https://literarypublisher.com/', image: '/img/shots/literary-mock.jpg' },
+  { name: 'Pet Paw', what: 'Pet shop and adoption website', tags: ['Custom WordPress', 'PHP'], image: '/img/shots/petpaw-mock.jpg' },
+  { name: 'United Ummah', what: 'Community hub for programmes, events and donations', tags: ['React', 'TypeScript', 'Tailwind'], image: '/img/shots/ummah-mock.jpg' },
+  { name: 'Replica Copy Industries', what: 'Printing, signage and branding company', tags: ['WordPress', 'PHP'], url: 'https://replicacopyindustries.com/', image: '/img/shots/replica-mock.jpg', live: '/img/shots/replica.jpg' },
   { name: 'Digital Experts', what: 'Agency website — multi-page Next.js', tags: ['Next.js', 'Tailwind'], url: 'https://digitalexperts.dev', image: '/img/shots/digitalexperts.jpg' },
-  { name: 'Literary Publishers', what: 'Publishing platform for writers', tags: ['React', 'EmailJS'], url: 'https://literarypublisher.com/' },
-  { name: 'United Ummah', what: 'Community knowledge and services hub', tags: ['React', 'TypeScript', 'Tailwind'] },
-  { name: 'Kennett Kreamery', what: 'Ice-cream brand website', tags: ['Custom WordPress', 'PHP'] },
-  { name: 'Pet Paw', what: 'Pet adoption website', tags: ['Custom WordPress', 'PHP'] },
+];
+
+export const services = [
+  { title: 'Web Development', body: 'React, Next.js, HTML and WordPress sites that load fast and convert.', icon: '/img/services/web.png' },
+  { title: 'Mobile Apps', body: 'Expo / React Native and Kotlin apps for Android and iOS.', icon: '/img/services/mobile.png' },
+  { title: 'Backend & AI', body: 'APIs, RAG chatbots, AI agents and MCP servers that stay correct under load.', icon: '/img/services/backend.png' },
+  { title: 'Content & Lenses', body: 'Snapchat Lenses, motion graphics and browser games people share.', icon: '/img/services/creator.png' },
 ];
 
 export const lenses = {

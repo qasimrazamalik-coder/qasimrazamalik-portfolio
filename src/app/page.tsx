@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { SITE_URL, about, aiTools, capabilities, clients, education, experience, faqs, lenses, profile, roles, socials, stack, techIcons, ventures } from '@/content/profile';
+import { SITE_URL, about, aiTools, capabilities, clients, education, experience, faqs, lenses, profile, roles, services, socials, stack, techIcons, ventures } from '@/content/profile';
 import { featured, projects, tracks } from '@/content/projects';
 import { getRepos } from '@/lib/github';
 import { Experience } from '@/components/ui/Experience';
@@ -8,6 +8,8 @@ import { WorkExplorer } from '@/components/sections/WorkExplorer';
 import { ContactForm } from '@/components/sections/ContactForm';
 import { Arcade } from '@/components/sections/Arcade';
 import { ChatLauncher } from '@/components/ui/ChatBot';
+import { Carousel } from '@/components/ui/Carousel';
+import { MobileMenu, Preloader, ScrollTop } from '@/components/ui/Chrome';
 
 export const revalidate = 21600;
 
@@ -104,6 +106,8 @@ export default async function Home() {
       <Experience />
       <CommandPalette commands={commands} />
       <ChatLauncher />
+      <ScrollTop />
+      <Preloader />
 
       {/* header */}
       <header className="fixed inset-x-0 top-0 z-40 before:pointer-events-none before:absolute before:inset-0 before:-bottom-6 before:bg-gradient-to-b before:from-night/95 before:via-night/70 before:to-transparent before:backdrop-blur-md before:[mask-image:linear-gradient(to_bottom,black_55%,transparent)]">
@@ -123,9 +127,10 @@ export default async function Home() {
           </nav>
           <div className="flex items-center gap-3">
             <PaletteButton />
-            <a href={`mailto:${profile.email}`} data-magnetic className="group rounded-full bg-snow px-4 py-2 text-sm font-medium text-night">
+            <a href={`mailto:${profile.email}`} data-magnetic className="group hidden rounded-full bg-snow px-4 py-2 text-sm font-medium text-night sm:block">
               <span className="roll"><span>Hire me</span><span aria-hidden className="!text-night">Say hi →</span></span>
             </a>
+            <MobileMenu links={[...nav, { href: '#clients', label: 'Clients' }]} />
           </div>
         </div>
       </header>
@@ -188,7 +193,7 @@ export default async function Home() {
             <div>
               <Eyebrow n="01">Base camp</Eyebrow>
               <h2 className="mt-6 text-4xl font-medium leading-[1.02] tracking-tight md:text-6xl" data-split>
-                Evidence over adjectives.
+                Engineer from the mountains of <em className="font-serif font-normal text-glacier">Abbottabad.</em>
               </h2>
               <div className="group relative mt-10 w-56 md:w-64" data-reveal>
                 <div className="absolute -inset-3 rounded-[2rem] bg-[conic-gradient(from_180deg,#7cf3d6,#ffb454,#9d8cff,#7cf3d6)] opacity-40 blur-2xl transition-opacity duration-700 group-hover:opacity-80" aria-hidden />
@@ -218,14 +223,14 @@ export default async function Home() {
           <div className="mx-auto max-w-7xl">
             <Eyebrow n="02">Ventures & flagship builds</Eyebrow>
             <h2 className="mt-6 max-w-4xl text-4xl font-medium leading-[1.02] tracking-tight md:text-6xl" data-split>
-              Companies and products I <em className="font-serif font-normal text-glacier">own.</em>
+              Companies I run, products I <em className="font-serif font-normal text-glacier">own.</em>
             </h2>
-            <div className="mt-14 grid gap-5 md:grid-cols-2">
+            <div className="mt-14 grid gap-5 md:grid-cols-2" data-stagger>
               {ventures.map((v, i) => (
                 <article key={v.name} data-tilt className={`spot group relative overflow-hidden rounded-3xl border border-line bg-ink/70 backdrop-blur-md [transform-style:preserve-3d] ${i === 0 ? 'md:col-span-2 md:grid md:grid-cols-[1.1fr_1fr]' : ''}`}>
                   <div className="relative aspect-[16/10] overflow-hidden border-b border-line md:border-b-0" style={{ background: `radial-gradient(circle at 30% 20%, ${v.accent}33, transparent 60%), #0c0e15` }}>
                     {v.image ? (
-                      <Image src={v.image} alt={`${v.name} website screenshot`} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover object-top transition-transform duration-[1.2s] ease-out group-hover:scale-[1.04]" />
+                      <Image src={v.image} alt={`${v.name} website screenshot`} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover object-top" data-parallax />
                     ) : (
                       <div className="flex h-full items-center justify-center">
                         <span className="font-serif text-6xl italic md:text-7xl" style={{ color: v.accent }}>{v.name.split(' ')[0]}</span>
@@ -256,7 +261,7 @@ export default async function Home() {
             <Eyebrow n="03">Selected work</Eyebrow>
             <div className="mt-6 flex flex-wrap items-end justify-between gap-6">
               <h2 className="max-w-3xl text-4xl font-medium leading-[1.02] tracking-tight md:text-6xl" data-split>
-                Each project ships with its <em className="font-serif font-normal text-glacier">receipts.</em>
+                Every project ships with <em className="font-serif font-normal text-glacier">receipts.</em>
               </h2>
               <p className="max-w-sm text-mist" data-reveal>Hover a row. The green line is the proof — the test, benchmark or measurement behind the claim.</p>
             </div>
@@ -296,7 +301,7 @@ export default async function Home() {
           <div className="mx-auto max-w-7xl rounded-[2rem] border border-line bg-night/60 p-6 backdrop-blur-xl md:p-12">
             <Eyebrow n="04">The full lab</Eyebrow>
             <h2 className="mt-6 text-4xl font-medium leading-[1.02] tracking-tight md:text-5xl" data-split>
-              {projects.length} projects across six tracks.
+              {projects.length} builds. Six disciplines. Zero lorem ipsum.
             </h2>
             <div className="mt-10">
               <WorkExplorer projects={projects} tracks={tracks} />
@@ -310,10 +315,10 @@ export default async function Home() {
             <div className="mx-auto max-w-7xl">
               <Eyebrow n="05">Live from GitHub</Eyebrow>
               <div className="mt-6 flex flex-wrap items-end justify-between gap-6">
-                <h2 className="text-4xl font-medium tracking-tight md:text-5xl" data-split>Fresh off the commit log.</h2>
+                <h2 className="text-4xl font-medium tracking-tight md:text-5xl" data-split>Pushed to GitHub, straight from the terminal.</h2>
                 <p className="max-w-sm text-sm text-mist" data-reveal>Pulled from the GitHub API and refreshed every few hours — new public work appears here automatically.</p>
               </div>
-              <ul className="mt-10 grid gap-3 md:grid-cols-2">
+              <ul className="mt-10 grid gap-3 md:grid-cols-2" data-stagger>
                 {(latest.length ? latest : recent).map((r) => (
                   <li key={r.name}>
                     <a href={r.url} target="_blank" rel="noopener noreferrer" className="group flex items-start justify-between gap-6 rounded-2xl border border-line bg-ink/60 p-5 backdrop-blur transition-colors hover:border-glacier/40">
@@ -339,11 +344,11 @@ export default async function Home() {
             <Eyebrow n="06">AI engineering</Eyebrow>
             <div className="mt-6 flex flex-wrap items-end justify-between gap-6">
               <h2 className="max-w-3xl text-4xl font-medium leading-[1.02] tracking-tight md:text-6xl" data-split>
-                MCP, agents, LLMs, vision and <em className="font-serif font-normal text-glacier">RAG.</em>
+                Agents, MCP, vision — AI that does <em className="font-serif font-normal text-glacier">real work.</em>
               </h2>
               <p className="max-w-sm text-mist" data-reveal>Try the assistant in the corner — it is a retrieval-augmented chatbot over this site, running entirely in your browser.</p>
             </div>
-            <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-stagger>
               {capabilities.map((c, i) => (
                 <article key={c.id} data-tilt className="spot rounded-2xl border border-line bg-ink/70 p-6 backdrop-blur-md [transform-style:preserve-3d]">
                   <p className="font-mono text-[11px] text-glacier">{String(i + 1).padStart(2, '0')}</p>
@@ -369,13 +374,13 @@ export default async function Home() {
             <Eyebrow n="07">Snapchat Lenses</Eyebrow>
             <div className="mt-6 grid gap-10 md:grid-cols-[0.8fr_1.2fr]">
               <div>
-                <h2 className="text-4xl font-medium leading-[1.02] tracking-tight md:text-5xl" data-split>Lenses & Web Lens games.</h2>
+                <h2 className="text-4xl font-medium leading-[1.02] tracking-tight md:text-5xl" data-split>Snapchat Lenses built in Lens Studio.</h2>
                 <p className="mt-5 text-mist" data-reveal>{lenses.intro}</p>
                 {socials.find((s) => s.label === 'Snapchat')?.url && (
                   <a href={socials.find((s) => s.label === 'Snapchat')!.url} target="_blank" rel="noopener noreferrer" data-magnetic className="mt-6 inline-flex rounded-full bg-[#fffc00] px-5 py-3 text-sm font-medium text-night">Open on Snapchat ↗</a>
                 )}
               </div>
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-4 sm:grid-cols-2" data-stagger>
                 {lenses.groups.map((g) => (
                   <div key={g.title} className="rounded-2xl border border-line bg-ink/70 p-5">
                     <h3 className="font-mono text-[11px] uppercase tracking-widest text-[#fffc00]">{g.title}</h3>
@@ -394,7 +399,7 @@ export default async function Home() {
           <div className="mx-auto max-w-7xl">
             <Eyebrow n="08">Arcade</Eyebrow>
             <h2 className="mt-6 text-4xl font-medium leading-[1.02] tracking-tight md:text-6xl" data-split>
-              Take a <em className="font-serif font-normal text-glacier">break.</em>
+              Three games. One <em className="font-serif font-normal text-glacier">break.</em>
             </h2>
             <div className="mt-12 rounded-[2rem] border border-line bg-night/60 p-6 backdrop-blur-xl md:p-12">
               <Arcade />
@@ -422,7 +427,7 @@ export default async function Home() {
           <div className="mx-auto grid max-w-7xl gap-14 md:grid-cols-[0.8fr_1.2fr]">
             <div className="md:sticky md:top-28 md:self-start">
               <Eyebrow n="09">The climb</Eyebrow>
-              <h2 className="mt-6 text-4xl font-medium leading-[1.02] tracking-tight md:text-6xl" data-split>Experience & education.</h2>
+              <h2 className="mt-6 text-4xl font-medium leading-[1.02] tracking-tight md:text-6xl" data-split>From freelance builds to AI engineering.</h2>
               <ul className="mt-10 space-y-4">
                 {education.map((e) => (
                   <li key={e.school} className="rounded-2xl border border-line bg-ink/60 p-5 backdrop-blur" data-reveal>
@@ -465,7 +470,7 @@ export default async function Home() {
                 </li>
               ))}
             </ul>
-            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-stagger>
               {stack.map((s) => (
                 <div key={s.group} data-tilt className="spot rounded-2xl border border-line bg-ink/60 p-6 backdrop-blur-md [transform-style:preserve-3d]">
                   <h3 className="font-mono text-[11px] uppercase tracking-widest text-glacier">{s.group}</h3>
@@ -484,32 +489,44 @@ export default async function Home() {
         <section id="clients" className="px-5 pb-28 md:px-10 md:pb-40">
           <div className="mx-auto max-w-7xl">
             <Eyebrow n="11">Client builds</Eyebrow>
-            <h2 className="mt-6 max-w-3xl text-4xl font-medium tracking-tight md:text-5xl" data-split>Websites for real businesses.</h2>
-            <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {clients.filter((c) => c.image).map((c) => (
-                <li key={c.name}>
-                  <a href={c.url} target="_blank" rel="noopener noreferrer" data-cursor="view" data-cursor-label="Visit" className="group block overflow-hidden rounded-2xl border border-line bg-ink/80 backdrop-blur transition-colors hover:border-glacier/40">
-                    <div className="relative aspect-[16/10] overflow-hidden">
-                      <Image src={c.image!} alt={`${c.name} website`} fill sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" className="object-cover object-top transition-transform duration-[1.2s] ease-out group-hover:scale-105" />
+            <h2 className="mt-6 max-w-3xl text-4xl font-medium tracking-tight md:text-5xl" data-split>Live sites, real businesses.</h2>
+            <div className="mt-10">
+              <Carousel label="Client websites" autoplay={4500}>
+                {clients.map((c) => (
+                  <a key={c.name} href={c.url ?? '#contact'} target={c.url ? '_blank' : undefined} rel="noopener noreferrer" data-cursor="view" data-cursor-label={c.url ? 'Visit' : 'Ask'} draggable={false} className="group block overflow-hidden rounded-3xl border border-line bg-ink/80 backdrop-blur transition-colors hover:border-glacier/40">
+                    <div className="relative aspect-[16/10] overflow-hidden bg-[#0c0e15]">
+                      <Image src={c.image} alt={`${c.name} website mockup`} fill draggable={false} sizes="(min-width: 1024px) 42vw, (min-width: 640px) 60vw, 82vw" className="object-cover object-top transition-transform duration-[1.2s] ease-out group-hover:scale-105" />
                     </div>
-                    <div className="p-5">
-                      <p className="text-lg tracking-tight text-snow"><Roll>{c.name}</Roll></p>
-                      <p className="mt-1 text-sm text-mist">{c.what}</p>
-                      <p className="mt-3 font-mono text-[10px] uppercase tracking-widest text-mist">{c.tags.join(' · ')}</p>
+                    <div className="flex items-end justify-between gap-4 p-5 md:p-6">
+                      <div>
+                        <p className="text-xl tracking-tight text-snow"><Roll>{c.name}</Roll></p>
+                        <p className="mt-1 text-sm text-mist">{c.what}</p>
+                        <p className="mt-3 font-mono text-[10px] uppercase tracking-widest text-mist">{c.tags.join(' · ')}</p>
+                      </div>
+                      <span className="shrink-0 font-mono text-[10px] uppercase tracking-widest text-glacier">{c.url ? 'Live ↗' : 'Archive'}</span>
                     </div>
                   </a>
-                </li>
-              ))}
-            </ul>
-            <ul className="mt-4 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
-              {clients.filter((c) => !c.image).map((c) => (
-                <li key={c.name} className="bg-ink/80 p-5 backdrop-blur">
-                  <p className="text-snow">{c.name}</p>
-                  <p className="mt-1 text-sm text-mist">{c.what}</p>
-                  <p className="mt-3 font-mono text-[10px] uppercase tracking-widest text-mist">{c.tags.join(' · ')}</p>
-                </li>
-              ))}
-            </ul>
+                ))}
+              </Carousel>
+            </div>
+
+            <div className="mt-24">
+              <p className="font-mono text-[11px] uppercase tracking-widest text-mist">What clients hire me for</p>
+              <div className="mt-6">
+                <Carousel label="Services" itemClass="w-[72%] sm:w-[44%] lg:w-[24%]" depth={false}>
+                  {services.map((sv, i) => (
+                    <article key={sv.title} className="group flex h-full flex-col rounded-3xl border border-line bg-ink/70 p-6 backdrop-blur-md transition-colors hover:border-glacier/40">
+                      <div className="flex items-center justify-between">
+                        <Image src={sv.icon} alt="" width={56} height={56} draggable={false} className="h-14 w-14 object-contain transition-transform duration-500 group-hover:rotate-6 group-hover:scale-110" />
+                        <span className="font-mono text-[11px] text-glacier">{String(i + 1).padStart(2, '0')}</span>
+                      </div>
+                      <h3 className="mt-6 text-xl font-medium tracking-tight">{sv.title}</h3>
+                      <p className="mt-2 text-sm leading-relaxed text-mist">{sv.body}</p>
+                    </article>
+                  ))}
+                </Carousel>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -518,7 +535,7 @@ export default async function Home() {
           <div className="mx-auto grid max-w-7xl gap-12 md:grid-cols-[0.8fr_1.2fr]">
             <div>
               <Eyebrow n="12">Quick answers</Eyebrow>
-              <h2 className="mt-6 text-4xl font-medium tracking-tight md:text-5xl" data-split>FAQ</h2>
+              <h2 className="mt-6 text-4xl font-medium tracking-tight md:text-5xl" data-split>Questions recruiters ask me.</h2>
             </div>
             <div className="divide-y divide-line border-y border-line">
               {faqs.map((f) => (

@@ -57,6 +57,9 @@ export function Experience() {
       );
     }
 
+    const toTop = () => (lenis ? lenis.scrollTo(0, { duration: 1.6, easing: (t: number) => 1 - Math.pow(1 - t, 4) }) : scrollTo({ top: 0, behavior: 'smooth' }));
+    addEventListener('scroll-top', toTop);
+
     /* page progress -> camera + progress bar */
     const st = ScrollTrigger.create({
       start: 0,
@@ -97,6 +100,18 @@ export function Experience() {
       /* fade-up blocks */
       gsap.utils.toArray<HTMLElement>('[data-reveal]').forEach((el) => {
         gsap.from(el, { y: 40, opacity: 0, duration: 1, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 90%' } });
+      });
+      /* cards rise in with a stagger — works the same on touch screens */
+      gsap.utils.toArray<HTMLElement>('[data-stagger]').forEach((group) => {
+        gsap.from(group.children, { y: 60, opacity: 0, scale: 0.96, duration: 0.9, ease: 'expo.out', stagger: 0.08, scrollTrigger: { trigger: group, start: 'top 88%' } });
+      });
+      /* scroll-scrubbed parallax for images (mobile included) */
+      gsap.utils.toArray<HTMLElement>('[data-parallax]').forEach((el) => {
+        gsap.fromTo(el, { yPercent: -8, scale: 1.12 }, { yPercent: 8, scale: 1.12, ease: 'none', scrollTrigger: { trigger: el.parentElement, start: 'top bottom', end: 'bottom top', scrub: true } });
+      });
+      /* headings drift sideways as they pass — subtle depth on every screen */
+      gsap.utils.toArray<HTMLElement>('[data-drift]').forEach((el) => {
+        gsap.fromTo(el, { xPercent: -3 }, { xPercent: 3, ease: 'none', scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true } });
       });
       /* counters */
       gsap.utils.toArray<HTMLElement>('[data-count]').forEach((el) => {
@@ -161,7 +176,7 @@ export function Experience() {
         const px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
         el.style.setProperty('--mx', `${px * 100}%`);
         el.style.setProperty('--my', `${py * 100}%`);
-        if (!reduced) gsap.to(el, { rotateY: (px - 0.5) * 8, rotateX: (0.5 - py) * 8, transformPerspective: 900, duration: 0.5, ease: 'power2.out' });
+        if (!reduced && fine) gsap.to(el, { rotateY: (px - 0.5) * 8, rotateX: (0.5 - py) * 8, transformPerspective: 900, duration: 0.5, ease: 'power2.out' });
       };
       const out = () => gsap.to(el, { rotateX: 0, rotateY: 0, duration: 0.8, ease: 'expo.out' });
       el.addEventListener('pointermove', mv);
@@ -172,6 +187,7 @@ export function Experience() {
     requestAnimationFrame(() => ScrollTrigger.refresh());
 
     return () => {
+      removeEventListener('scroll-top', toTop);
       st.kill();
       ctx.revert();
       cleanupCursor();

@@ -78,3 +78,18 @@ body { font-family: var(--font-sans); overflow-x: hidden; }
   .grain::after { display: none; }
 }
 @media (hover: none) { .cursor-ui { display: none !important; } }
+
+/* responsive + touch polish */
+html, body { overflow-x: clip; }
+* { -webkit-tap-highlight-color: transparent; }
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+a, button { touch-action: manipulation; }
+@media (hover: none) {
+  /* touch: give pressed cards a tactile response instead of hover */
+  [data-tilt]:active, a.group:active { transform: scale(0.985); transition: transform 0.15s ease-out; }
+}
+section[id] { scroll-margin-top: 5rem; }
+@supports (padding: env(safe-area-inset-bottom)) {
+  body { padding-bottom: env(safe-area-inset-bottom); }
+}
