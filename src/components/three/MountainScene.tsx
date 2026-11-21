@@ -4,6 +4,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { scrollState } from '@/lib/scrollState';
+import { horizon } from '@/content/places';
 
 /* ---------- deterministic noise (no deps) ---------- */
 function hash(x: number, y: number) {
@@ -242,6 +243,98 @@ function Beacon() {
   );
 }
 
+/* ---------- real horizon: photos of Thandiani & Mukshpuri, displaced into relief ---------- */
+const rangeVert = /* glsl */ `
+  uniform sampler2D uA; uniform sampler2D uB; uniform float uMix; uniform vec2 uCoverA; uniform vec2 uCoverB;
+  varying vec2 vUv; varying float vLum;
+  vec2 cover(vec2 uv, vec2 s) { return (uv - 0.5) * s + 0.5; }
+  void main() {
+    vUv = uv;
+    vec3 a = texture2D(uA, cover(uv, uCoverA)).rgb;
+    vec3 b = texture2D(uB, cover(uv, uCoverB)).rgb;
+    float lum = dot(mix(a, b, uMix), vec3(0.299, 0.587, 0.114));
+    vLum = lum;
+    vec3 p = position;
+    // bright snow and ridgelines come forward, dark valleys fall back: a 2.5D relief from the real photo
+    p.z += lum * 7.0 * smoothstep(0.05, 0.45, uv.y);
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
+  }
+`;
+const rangeFrag = /* glsl */ `
+  uniform sampler2D uA; uniform sampler2D uB; uniform float uMix; uniform vec2 uCoverA; uniform vec2 uCoverB;
+  uniform vec3 uFog; uniform float uFade; uniform float uTime;
+  varying vec2 vUv; varying float vLum;
+  vec2 cover(vec2 uv, vec2 s) { return (uv - 0.5) * s + 0.5; }
+  void main() {
+    vec2 drift = vec2(uTime * 0.0015, 0.0);
+    vec3 a = texture2D(uA, cover(vUv + drift, uCoverA)).rgb;
+    vec3 b = texture2D(uB, cover(vUv + drift, uCoverB)).rgb;
+    vec3 c = mix(a, b, uMix);
+    float lum = dot(c, vec3(0.299, 0.587, 0.114));
+    // moonlit grade: cool shadows, snow keeps its glow, sky sinks toward night
+    vec3 night = mix(vec3(lum) * vec3(0.42, 0.52, 0.72), c * vec3(0.55, 0.62, 0.78), 0.35);
+    night += vec3(0.49, 0.95, 0.84) * smoothstep(0.72, 0.95, lum) * 0.06;
+    float sky = smoothstep(0.55, 0.95, vUv.y);
+    night = mix(night, night * 0.35, sky);
+    // fade into fog at the base and edges so the procedural terrain owns the foreground
+    float edge = smoothstep(0.0, 0.12, vUv.x) * (1.0 - smoothstep(0.88, 1.0, vUv.x));
+    float base = smoothstep(0.02, 0.32, vUv.y);
+    float k = edge * base * uFade;
+    gl_FragColor = vec4(night, k * mix(0.9, 0.5, sky));
+  }
+`;
+
+function coverScale(tex: THREE.Texture, planeAspect: number) {
+  const img = tex.image as { width: number; height: number };
+  const a = img.width / img.height;
+  return a > planeAspect ? new THREE.Vector2(planeAspect / a, 1) : new THREE.Vector2(1, a / planeAspect);
+}
+
+function PhotoRange({ urls }: { urls: [string, string] }) {
+  const mat = useRef<THREE.ShaderMaterial>(null);
+  const W = 190, H = 95;
+  const geo = useMemo(() => new THREE.PlaneGeometry(W, H, 180, 90), []);
+  const uniforms = useMemo(
+    () => ({
+      uA: { value: null as THREE.Texture | null }, uB: { value: null as THREE.Texture | null },
+      uCoverA: { value: new THREE.Vector2(1, 1) }, uCoverB: { value: new THREE.Vector2(1, 1) },
+      uMix: { value: 0 }, uFade: { value: 0 }, uTime: { value: 0 }, uFog: { value: new THREE.Color('#06070b') },
+    }),
+    []
+  );
+  const ready = useRef(false);
+  useEffect(() => {
+    const loader = new THREE.TextureLoader();
+    let alive = true;
+    Promise.all(urls.map((u) => loader.loadAsync(u))).then(([a, b]) => {
+      if (!alive) return;
+      for (const t of [a, b]) { t.colorSpace = THREE.SRGBColorSpace; t.minFilter = THREE.LinearFilter; t.generateMipmaps = false; }
+      uniforms.uA.value = a; uniforms.uB.value = b;
+      uniforms.uCoverA.value = coverScale(a, W / H); uniforms.uCoverB.value = coverScale(b, W / H);
+      ready.current = true;
+    }).catch(() => {});
+    return () => { alive = false; };
+  }, [urls, uniforms]);
+  useFrame((s, dt) => {
+    if (!mat.current || !ready.current) return;
+    const u = mat.current.uniforms;
+    if (u.uA.value !== uniforms.uA.value) {
+      // the material may hold its own copy of the uniforms: push the loaded photos onto it
+      u.uA.value = uniforms.uA.value; u.uB.value = uniforms.uB.value;
+      u.uCoverA.value = uniforms.uCoverA.value; u.uCoverB.value = uniforms.uCoverB.value;
+    }
+    u.uTime.value = s.clock.elapsedTime;
+    u.uFade.value = Math.min(1, u.uFade.value + dt * 0.5);
+    const target = THREE.MathUtils.smoothstep(scrollState.progress, 0.3, 0.7);
+    u.uMix.value += (target - u.uMix.value) * Math.min(1, dt * 2);
+  });
+  return (
+    <mesh geometry={geo} position={[0, 17, -78]} renderOrder={-1}>
+      <shaderMaterial ref={mat} vertexShader={rangeVert} fragmentShader={rangeFrag} uniforms={uniforms} transparent depthWrite={false} />
+    </mesh>
+  );
+}
+
 /* ---------- camera rig: scroll flies the camera through the valley ---------- */
 function Rig() {
   const { camera, pointer } = useThree();
@@ -272,6 +365,10 @@ function Visibility() {
 }
 
 export default function MountainScene() {
+  const urls = useMemo(
+    () => (typeof window !== 'undefined' && window.innerWidth < 768 ? horizon.mobile : horizon.desktop) as [string, string],
+    []
+  );
   return (
     <Canvas
       dpr={typeof window !== 'undefined' && window.innerWidth < 768 ? [1, 1.25] : [1, 1.75]}
@@ -281,6 +378,7 @@ export default function MountainScene() {
       aria-hidden
     >
       <fog attach="fog" args={['#06070b', 20, 90]} />
+      <PhotoRange urls={urls} />
       <Stars />
       <Moon />
       <Terrain />

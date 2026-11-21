@@ -9,6 +9,8 @@ import { ContactForm } from '@/components/sections/ContactForm';
 import { Arcade } from '@/components/sections/Arcade';
 import { ChatLauncher } from '@/components/ui/ChatBot';
 import { Carousel } from '@/components/ui/Carousel';
+import { FieldNotes } from '@/components/sections/FieldNotes';
+import { licenseUrl, places, sourceUrl } from '@/content/places';
 import { MobileMenu, Preloader, ScrollTop } from '@/components/ui/Chrome';
 
 export const revalidate = 21600;
@@ -218,10 +220,12 @@ export default async function Home() {
           </div>
         </section>
 
+        <FieldNotes />
+
         {/* VENTURES */}
         <section id="ventures" className="px-5 pb-28 md:px-10 md:pb-40">
           <div className="mx-auto max-w-7xl">
-            <Eyebrow n="02">Ventures & flagship builds</Eyebrow>
+            <Eyebrow n="03">Ventures & flagship builds</Eyebrow>
             <h2 className="mt-6 max-w-4xl text-4xl font-medium leading-[1.02] tracking-tight md:text-6xl" data-split>
               Companies I run, products I <em className="font-serif font-normal text-glacier">own.</em>
             </h2>
@@ -258,7 +262,7 @@ export default async function Home() {
         {/* FEATURED WORK */}
         <section id="work" className="px-5 pb-28 md:px-10 md:pb-40">
           <div className="mx-auto max-w-7xl">
-            <Eyebrow n="03">Selected work</Eyebrow>
+            <Eyebrow n="04">Selected work</Eyebrow>
             <div className="mt-6 flex flex-wrap items-end justify-between gap-6">
               <h2 className="max-w-3xl text-4xl font-medium leading-[1.02] tracking-tight md:text-6xl" data-split>
                 Every project ships with <em className="font-serif font-normal text-glacier">receipts.</em>
@@ -299,7 +303,7 @@ export default async function Home() {
         {/* EXPLORER */}
         <section id="explore" className="px-5 pb-28 md:px-10 md:pb-40">
           <div className="mx-auto max-w-7xl rounded-[2rem] border border-line bg-night/60 p-6 backdrop-blur-xl md:p-12">
-            <Eyebrow n="04">The full lab</Eyebrow>
+            <Eyebrow n="05">The full lab</Eyebrow>
             <h2 className="mt-6 text-4xl font-medium leading-[1.02] tracking-tight md:text-5xl" data-split>
               {projects.length} builds. Six disciplines. Zero lorem ipsum.
             </h2>
@@ -313,7 +317,7 @@ export default async function Home() {
         {(latest.length > 0 || recent.length > 0) && (
           <section id="latest" className="px-5 pb-28 md:px-10 md:pb-40">
             <div className="mx-auto max-w-7xl">
-              <Eyebrow n="05">Live from GitHub</Eyebrow>
+              <Eyebrow n="06">Live from GitHub</Eyebrow>
               <div className="mt-6 flex flex-wrap items-end justify-between gap-6">
                 <h2 className="text-4xl font-medium tracking-tight md:text-5xl" data-split>Pushed to GitHub, straight from the terminal.</h2>
                 <p className="max-w-sm text-sm text-mist" data-reveal>Pulled from the GitHub API and refreshed every few hours — new public work appears here automatically.</p>
@@ -341,7 +345,7 @@ export default async function Home() {
         {/* AI CAPABILITIES */}
         <section id="ai" className="px-5 pb-28 md:px-10 md:pb-40">
           <div className="mx-auto max-w-7xl">
-            <Eyebrow n="06">AI engineering</Eyebrow>
+            <Eyebrow n="07">AI engineering</Eyebrow>
             <div className="mt-6 flex flex-wrap items-end justify-between gap-6">
               <h2 className="max-w-3xl text-4xl font-medium leading-[1.02] tracking-tight md:text-6xl" data-split>
                 Agents, MCP, vision — AI that does <em className="font-serif font-normal text-glacier">real work.</em>
@@ -371,7 +375,7 @@ export default async function Home() {
         {/* SNAPCHAT LENSES */}
         <section id="lenses" className="px-5 pb-28 md:px-10 md:pb-40">
           <div className="mx-auto max-w-7xl rounded-[2rem] border border-line bg-[radial-gradient(circle_at_85%_10%,rgba(255,252,0,0.12),transparent_45%)] bg-night/60 p-6 backdrop-blur-xl md:p-12">
-            <Eyebrow n="07">Snapchat Lenses</Eyebrow>
+            <Eyebrow n="08">Snapchat Lenses</Eyebrow>
             <div className="mt-6 grid gap-10 md:grid-cols-[0.8fr_1.2fr]">
               <div>
                 <h2 className="text-4xl font-medium leading-[1.02] tracking-tight md:text-5xl" data-split>Snapchat Lenses built in Lens Studio.</h2>
@@ -397,7 +401,7 @@ export default async function Home() {
         {/* ARCADE */}
         <section id="arcade" className="px-5 pb-28 md:px-10 md:pb-40">
           <div className="mx-auto max-w-7xl">
-            <Eyebrow n="08">Arcade</Eyebrow>
+            <Eyebrow n="09">Arcade</Eyebrow>
             <h2 className="mt-6 text-4xl font-medium leading-[1.02] tracking-tight md:text-6xl" data-split>
               Three games. One <em className="font-serif font-normal text-glacier">break.</em>
             </h2>
@@ -426,7 +430,7 @@ export default async function Home() {
         <section id="journey" className="px-5 py-28 md:px-10 md:py-40">
           <div className="mx-auto grid max-w-7xl gap-14 md:grid-cols-[0.8fr_1.2fr]">
             <div className="md:sticky md:top-28 md:self-start">
-              <Eyebrow n="09">The climb</Eyebrow>
+              <Eyebrow n="10">The climb</Eyebrow>
               <h2 className="mt-6 text-4xl font-medium leading-[1.02] tracking-tight md:text-6xl" data-split>From freelance builds to AI engineering.</h2>
               <ul className="mt-10 space-y-4">
                 {education.map((e) => (
@@ -462,7 +466,7 @@ export default async function Home() {
         {/* STACK GRID */}
         <section id="stack" className="px-5 pb-28 md:px-10 md:pb-40">
           <div className="mx-auto max-w-7xl">
-            <Eyebrow n="10">Toolbox</Eyebrow>
+            <Eyebrow n="11">Toolbox</Eyebrow>
             <ul className="mt-8 flex flex-wrap items-center gap-3" aria-label="Core technologies">
               {techIcons.map((t) => (
                 <li key={t.name} title={t.name} className="group flex h-14 w-14 items-center justify-center rounded-2xl border border-line bg-panel/60 backdrop-blur transition-transform duration-300 hover:-translate-y-1 hover:border-glacier">
@@ -488,7 +492,7 @@ export default async function Home() {
         {/* CLIENTS */}
         <section id="clients" className="px-5 pb-28 md:px-10 md:pb-40">
           <div className="mx-auto max-w-7xl">
-            <Eyebrow n="11">Client builds</Eyebrow>
+            <Eyebrow n="12">Client builds</Eyebrow>
             <h2 className="mt-6 max-w-3xl text-4xl font-medium tracking-tight md:text-5xl" data-split>Live sites, real businesses.</h2>
             <div className="mt-10">
               <Carousel label="Client websites" autoplay={4500}>
@@ -534,7 +538,7 @@ export default async function Home() {
         <section id="faq" className="px-5 pb-28 md:px-10 md:pb-40">
           <div className="mx-auto grid max-w-7xl gap-12 md:grid-cols-[0.8fr_1.2fr]">
             <div>
-              <Eyebrow n="12">Quick answers</Eyebrow>
+              <Eyebrow n="13">Quick answers</Eyebrow>
               <h2 className="mt-6 text-4xl font-medium tracking-tight md:text-5xl" data-split>Questions recruiters ask me.</h2>
             </div>
             <div className="divide-y divide-line border-y border-line">
@@ -553,8 +557,10 @@ export default async function Home() {
 
         {/* CONTACT */}
         <section id="contact" className="px-5 pb-20 md:px-10">
-          <div className="mx-auto max-w-7xl overflow-hidden rounded-[2rem] border border-line bg-night/70 p-6 backdrop-blur-xl md:p-14">
-            <Eyebrow n="13">Summit</Eyebrow>
+          <div className="relative isolate mx-auto max-w-7xl overflow-hidden rounded-[2rem] border border-line bg-night/70 p-6 md:p-14">
+            <Image src="/img/abbottabad/miranjani-sunset.jpg" alt="" fill sizes="100vw" className="kenburns -z-10 object-cover opacity-35" />
+            <div className="absolute inset-0 -z-10 bg-gradient-to-r from-night via-night/85 to-night/40" />
+            <Eyebrow n="14">Summit</Eyebrow>
             <div className="mt-8 grid gap-12 md:grid-cols-2">
               <div>
                 <h2 className="text-5xl font-medium leading-[0.95] tracking-[-0.04em] md:text-7xl" data-split>
@@ -581,6 +587,17 @@ export default async function Home() {
           <span>Built with Next.js · Three.js · GSAP</span>
           <a href="#top" className="sweep hover:text-snow">Back to top ↑</a>
         </div>
+        <details className="mx-auto mt-6 max-w-7xl font-mono text-[10px] uppercase tracking-widest text-mist/70">
+          <summary className="cursor-pointer list-none hover:text-snow">Photo credits — Abbottabad &amp; Galyat ↓</summary>
+          <ul className="mt-4 grid gap-2 normal-case tracking-normal sm:grid-cols-2">
+            {places.map((p) => (
+              <li key={p.slug}>
+                <a className="sweep hover:text-snow" href={sourceUrl(p)} target="_blank" rel="noopener noreferrer">{p.place} — {p.file.replace(/_/g, ' ')}</a> by {p.author}, <a className="sweep hover:text-snow" href={licenseUrl(p.license)} target="_blank" rel="noopener noreferrer license">{p.license}</a>
+              </li>
+            ))}
+            <li>Via Wikimedia Commons. Resized; the two horizon photos are colour-graded inside the 3D scene.</li>
+          </ul>
+        </details>
       </footer>
     </>
   );

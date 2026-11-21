@@ -6,7 +6,7 @@ export const profile = {
   shortName: 'Qasim',
   role: 'AI & Backend Engineer',
   headline: 'Software Engineer · Full-Stack, AI, Backend & Data · MS AI @ COMSATS',
-  tagline: 'I build software that proves itself — race-tested APIs, benchmarked AI, and interfaces people remember.',
+  tagline: 'Seat-booking APIs that never sell a seat twice, ML models scored on data they never saw, and 30+ client sites live in production.',
   location: 'Abbottabad, Pakistan',
   timezone: 'UTC+5 · Remote worldwide',
   email: 'iamqasimrazamalik@gmail.com',
@@ -32,9 +32,9 @@ export const socials: { label: string; url: string }[] = [
 export const roles = ['AI & Backend Engineer', 'Full-Stack Developer', 'HTML & WordPress Developer', 'Data Analyst', 'Game & Lens Creator'] as const;
 
 export const about = [
-  'I’m a software engineer spanning API-backed web products, AI-enabled applications and data analysis. I build React and TypeScript interfaces on Node.js and Python services, and I’ve delivered 30+ live business and e-commerce websites — custom code, HTML and WordPress.',
-  'My public work has one habit: every claim comes with evidence. APIs ship with concurrency race tests, ML projects ship with leak-free splits and honest baselines, and games ship playable.',
-  'I hold a BS in Computer Science from Abbottabad University of Science and Technology, I’m pursuing an MS in Artificial Intelligence at COMSATS, and I co-founded Primeura Digital Solutions.',
+  'I write the backend first and the adjectives last. Today I ship Node.js and Python services at Digital Experts. Before that I analysed business data at Bamudda, built React features at Scopic, and delivered 30+ live business and e-commerce sites through Lytn — custom code, plain HTML and WordPress.',
+  'Every public repo carries its own receipt. Encore’s checkout is hammered by race tests until no seat sells twice. The QLoRA text-to-SQL adapter is benchmarked against its base model, with a cost table. The Urdu sentiment model is scored separately on Urdu script and Roman Urdu, because they fail differently.',
+  'BS Computer Science from Abbottabad University of Science and Technology, now an MS in Artificial Intelligence at COMSATS. Alongside the day job I co-run Primeura Digital Solutions, a remote agency for UAE businesses, and build Snapchat Lens games in Lens Studio.',
 ] as const;
 
 export type Experience = {
@@ -146,32 +146,32 @@ export const capabilities = [
   {
     id: 'mcp',
     title: 'MCP servers',
-    body: 'I build Model Context Protocol servers that give AI assistants safe, typed access to real systems — files, databases, browsers and business tools. DriveMind ships its own MCP server so Claude can organise a Windows drive with Yes/Ask/No control.',
+    body: 'DriveMind ships its own MCP server, so Claude can sort and clean a Windows drive — and every move waits for a Yes, Ask or No. Same pattern for any tool: typed actions, nothing destructive without a human click.',
   },
   {
     id: 'agents',
     title: 'AI agents',
-    body: 'Multi-agent systems with an orchestrator, specialist workers, durable state and human-approval gates — plus n8n automations that score jobs, draft emails and move data between apps without manual work.',
+    body: 'AI Command Center: an orchestrator hands work to specialist agents, keeps durable state between runs and stops at human-approval gates. On the no-code side, n8n flows that score job posts and leave email drafts ready to send.',
   },
   {
     id: 'llms',
     title: 'LLM applications',
-    body: 'LLM-backed products measured, not guessed: QLoRA fine-tuning for text-to-SQL, governed semantic layers that cut confident wrong answers, and cost tables for every model choice.',
+    body: 'A QLoRA adapter that turns English into SQL, benchmarked against its base model on exact match and execution accuracy. A 40-question test of whether an LLM answers business questions better through a governed dbt metric layer than straight off raw tables.',
   },
   {
     id: 'cv',
     title: 'Computer vision',
-    body: 'YOLO detectors with mAP evaluation, Grad-CAM explanations for medical imaging, CLIP + FAISS image search, MediaPipe hand tracking and privacy-preserving face anonymisation.',
+    body: 'A YOLO helmet detector with mAP scores and an honest CPU-vs-GPU latency test. Grad-CAM written from scratch for a chest X-ray classifier. CLIP + FAISS photo search, and MediaPipe hand tracking driving Three.js effects live off a webcam.',
   },
   {
     id: 'rag',
     title: 'RAG chatbots',
-    body: 'Retrieval-augmented chatbots that answer from your documents with citations — ingestion, chunking, embeddings, vector search and guardrails so the bot only talks about what it knows. The assistant on this site is one, running locally in your browser.',
+    body: 'A support agent that answers from PDF, DOCX and Markdown with source citations and JWT roles, and a RAG Eval Lab that measures three chunking strategies instead of guessing. The assistant in the corner of this page is the small version: BM25 retrieval, running in your browser, no server.',
   },
   {
     id: 'web',
     title: 'Websites that sell',
-    body: 'Custom React and Next.js builds, fast HTML sites and WordPress / WooCommerce / Shopify stores — with SEO, AEO and performance treated as features, not afterthoughts.',
+    body: 'Glamur Paints, Replica Copy Industries, Literary Publishers and Digital Experts are live today. Next.js where the site needs logic; plain HTML or WordPress where the owner will edit it himself.',
   },
 ] as const;
 
@@ -191,7 +191,7 @@ export const ventures: Venture[] = [
     name: 'Primeura Digital Solutions',
     role: 'Co-founder · Operations & Delivery',
     summary: 'A Dubai-facing, remote-first digital agency I co-founded. Primeura builds websites, e-commerce stores, SEO and AI automation for UAE businesses, delivered by a lean project-based team.',
-    points: ['WordPress, custom sites, WooCommerce & Shopify', 'SEO, lead generation and AI/business automation', 'I run operations, hiring, delivery, QA and client success'],
+    points: ['Sites and stores for UAE businesses — WordPress, WooCommerce, Shopify, Next.js', 'SEO, lead generation and AI automation alongside the build', 'I own operations, hiring, delivery, QA and client success'],
     stack: ['React', 'Next.js', 'WordPress', 'AI automation'],
     url: 'https://primeura.com',
     image: '/img/shots/primeura.jpg',
@@ -208,8 +208,8 @@ export const ventures: Venture[] = [
   {
     name: 'FileKit',
     role: 'Founder · Product',
-    summary: 'My own premium file-tools platform: convert, compress and preview files in the browser. It also powers my website delivery workflow, where I preview client HTML builds before deployment.',
-    points: ['Browser-first file tools', 'Live HTML preview for client sites', 'Built as a premium, brandable platform'],
+    summary: 'My own file-tools site: convert, compress and preview files in the browser. It doubles as my staging screen — client HTML builds get checked on FileKit before they go to cPanel.',
+    points: ['Convert, compress and preview in the browser', 'Live HTML preview that client revisions run through'],
     stack: ['TypeScript', 'Next.js', 'Web APIs'],
     accent: '#9d8cff',
   },
@@ -217,7 +217,7 @@ export const ventures: Venture[] = [
     name: 'Resin Artistry',
     role: 'E-commerce & custom orders',
     summary: 'A resin-art e-commerce store with a custom-order management system — product catalogue, cart and checkout, plus a workflow for made-to-order pieces, with AI features layered on top.',
-    points: ['Next.js + Supabase', 'Custom order pipeline and admin', 'AI/ML-assisted recommendations'],
+    points: ['Catalogue, cart and checkout for finished pieces', 'An order pipeline for made-to-order work, from request to delivery', 'Next.js + Supabase, with AI/ML features on top'],
     stack: ['Next.js', 'Supabase', 'AI/ML'],
     accent: '#ff7ab6',
   },
@@ -236,19 +236,19 @@ export const clients: Client[] = [
 ];
 
 export const services = [
-  { title: 'Web Development', body: 'React, Next.js, HTML and WordPress sites that load fast and convert.', icon: '/img/services/web.png' },
-  { title: 'Mobile Apps', body: 'Expo / React Native and Kotlin apps for Android and iOS.', icon: '/img/services/mobile.png' },
-  { title: 'Backend & AI', body: 'APIs, RAG chatbots, AI agents and MCP servers that stay correct under load.', icon: '/img/services/backend.png' },
-  { title: 'Content & Lenses', body: 'Snapchat Lenses, motion graphics and browser games people share.', icon: '/img/services/creator.png' },
+  { title: 'Web Development', body: '30+ sites shipped. Next.js when it needs logic, WordPress when the owner wants to edit it himself.', icon: '/img/services/web.png' },
+  { title: 'Mobile Apps', body: 'Kotlin and Expo. BlockFlux runs a deterministic Kotlin core on its own Canvas renderer.', icon: '/img/services/mobile.png' },
+  { title: 'Backend & AI', body: 'APIs proven with race tests, RAG agents that cite their sources, MCP servers Claude can drive.', icon: '/img/services/backend.png' },
+  { title: 'Content & Lenses', body: '13 Snapchat Lens games, and Motion Forge — motion graphics that check their own frames.', icon: '/img/services/creator.png' },
 ];
 
 export const lenses = {
-  intro: 'I build Snapchat Lenses and Web Lens games in Lens Studio — lightweight, viral, made for every country and age.',
+  intro: 'Thirteen games that run inside Snapchat, built in Lens Studio: shooters, slicers, stackers and Bitmoji party games — plus camera lenses for colour and glow.',
   groups: [
     { title: 'Web Lens games', items: ['Neon Strike', 'Shatter Shot', 'Pulp Rush'] },
     { title: 'Arcade Lens games', items: ['Sky Stack', 'Dagger Rush', 'Prism Hop', 'Quick Draw', 'Cloud Hopper'] },
     { title: 'Bitmoji Lens+ games', items: ['Header Hero', 'Fling Me', "Don't Bonk Me", 'Sumo Smash', 'Copy Me'] },
-    { title: 'Camera lenses', items: ['Premium colour grading', 'Beauty & glow effects', 'Date / time stamp lenses'] },
+    { title: 'Camera lenses', items: ['Colour grades', 'Glow & beauty', 'Date and time stamps'] },
   ],
 };
 

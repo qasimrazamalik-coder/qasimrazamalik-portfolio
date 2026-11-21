@@ -93,3 +93,8 @@ section[id] { scroll-margin-top: 5rem; }
 @supports (padding: env(safe-area-inset-bottom)) {
   body { padding-bottom: env(safe-area-inset-bottom); }
 }
+
+/* slow cinematic push-in on real photos */
+@keyframes kenburns { from { transform: scale(1.05) translate(0, 0); } to { transform: scale(1.18) translate(-2%, -1.5%); } }
+.kenburns { animation: kenburns 24s ease-in-out infinite alternate; will-change: transform; }
+@media (prefers-reduced-motion: reduce) { .kenburns { animation: none; } }
