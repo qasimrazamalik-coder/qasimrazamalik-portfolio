@@ -11,8 +11,9 @@ type Props = { children: ReactNode; label: string; autoplay?: number; itemClass?
  */
 export function Carousel({ children, label, autoplay = 0, itemClass = 'w-[82%] sm:w-[60%] lg:w-[42%]', depth = true }: Props) {
   const track = useRef<HTMLDivElement>(null);
-  const [progress, setProgress] = useState(0);
+  const fill = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
+  const activeRef = useRef(0);
   const paused = useRef(false);
   const items = Children.toArray(children);
 
@@ -20,7 +21,7 @@ export function Carousel({ children, label, autoplay = 0, itemClass = 'w-[82%] s
     const el = track.current;
     if (!el) return;
     const max = el.scrollWidth - el.clientWidth;
-    setProgress(max > 0 ? el.scrollLeft / max : 0);
+    if (fill.current) fill.current.style.transform = `scaleX(${Math.max(0.08, max > 0 ? el.scrollLeft / max : 0)})`;
     const mid = el.scrollLeft + el.clientWidth / 2;
     let best = 0, bestD = Infinity;
     Array.from(el.children).forEach((c, i) => {
@@ -34,7 +35,7 @@ export function Carousel({ children, label, autoplay = 0, itemClass = 'w-[82%] s
         n.style.opacity = String(1 - t * 0.45);
       }
     });
-    setActive(best);
+    if (best !== activeRef.current) { activeRef.current = best; setActive(best); }
   }, [depth]);
 
   const go = useCallback((dir: number) => {
@@ -95,10 +96,10 @@ export function Carousel({ children, label, autoplay = 0, itemClass = 'w-[82%] s
         ))}
       </div>
       <div className="mt-6 flex items-center gap-4">
-        <button onClick={() => go(-1)} aria-label="Previous slide" className="flex h-11 w-11 items-center justify-center rounded-full border border-line bg-panel/60 text-snow backdrop-blur transition-[transform,border-color] hover:border-glacier active:scale-90">←</button>
-        <button onClick={() => go(1)} aria-label="Next slide" className="flex h-11 w-11 items-center justify-center rounded-full border border-line bg-panel/60 text-snow backdrop-blur transition-[transform,border-color] hover:border-glacier active:scale-90">→</button>
+        <button onClick={() => go(-1)} aria-label="Previous slide" className="flex h-11 w-11 items-center justify-center rounded-full border border-line bg-panel/85 text-snow transition-[transform,border-color] hover:border-glacier active:scale-90">←</button>
+        <button onClick={() => go(1)} aria-label="Next slide" className="flex h-11 w-11 items-center justify-center rounded-full border border-line bg-panel/85 text-snow transition-[transform,border-color] hover:border-glacier active:scale-90">→</button>
         <div className="relative h-px flex-1 overflow-hidden bg-line" aria-hidden>
-          <div className="absolute inset-y-0 left-0 bg-glacier transition-[width] duration-200" style={{ width: `${Math.max(8, progress * 100)}%` }} />
+          <div ref={fill} className="absolute inset-0 origin-left bg-glacier" style={{ transform: 'scaleX(0.08)' }} />
         </div>
         <span className="font-mono text-[11px] text-mist" aria-live="polite">{String(active + 1).padStart(2, '0')} / {String(items.length).padStart(2, '0')}</span>
       </div>

@@ -19,6 +19,7 @@ export function FieldNotes() {
   const names = useRef<HTMLParagraphElement>(null);
   const bar = useRef<HTMLDivElement>(null);
   const [idx, setIdx] = useState(0);
+  const idxRef = useRef(0);
 
   useEffect(() => {
     const el = wrap.current, tr = track.current;
@@ -40,7 +41,8 @@ export function FieldNotes() {
           anticipatePin: 1,
           onUpdate: (s) => {
             if (bar.current) bar.current.style.transform = `scaleX(${s.progress})`;
-            setIdx(Math.min(places.length - 1, Math.round(s.progress * (places.length - 1))));
+            const i = Math.min(places.length - 1, Math.round(s.progress * (places.length - 1)));
+            if (i !== idxRef.current) { idxRef.current = i; setIdx(i); }
           },
         },
       });
@@ -62,7 +64,7 @@ export function FieldNotes() {
 
   return (
     <section ref={wrap} id="abbottabad" aria-label="Abbottabad, frame by frame" className="relative flex min-h-[100svh] flex-col justify-center overflow-hidden py-16 md:py-20">
-      <p ref={names} aria-hidden className="pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 whitespace-nowrap font-medium uppercase leading-none tracking-[-0.04em] text-transparent [-webkit-text-stroke:1px_rgba(124,243,214,0.14)] text-[22vw] md:text-[16vw]">
+      <p ref={names} aria-hidden className="pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 whitespace-nowrap will-change-transform font-medium uppercase leading-none tracking-[-0.04em] text-transparent [-webkit-text-stroke:1px_rgba(124,243,214,0.14)] text-[22vw] md:text-[16vw]">
         Abbottabad · Thandiani · Miranjani · Shimla Hill · Mukshpuri · Galyat
       </p>
 
@@ -91,7 +93,7 @@ export function FieldNotes() {
                 data-pan
               />
               <div className="absolute inset-0 bg-gradient-to-t from-night/85 via-night/10 to-transparent" />
-              <span className="absolute left-4 top-4 rounded-full border border-snow/20 bg-night/50 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-snow backdrop-blur">
+              <span className="absolute left-4 top-4 rounded-full border border-snow/20 bg-night/85 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-snow">
                 {String(i + 1).padStart(2, '0')} / {String(places.length).padStart(2, '0')}
               </span>
             </div>

@@ -11,6 +11,8 @@ import { scrollState } from '@/lib/scrollState';
 const MountainScene = dynamic(() => import('@/components/three/MountainScene'), { ssr: false });
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
+// phones fire resize when the address bar shows/hides; refreshing every trigger then causes jumps and jank
+ScrollTrigger.config({ ignoreMobileResize: true, limitCallbacks: true });
 
 function canRender3D() {
   if (typeof window === 'undefined') return false;
@@ -33,14 +35,20 @@ export function Experience() {
   useEffect(() => {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const lowPower = (navigator as Navigator & { deviceMemory?: number }).deviceMemory !== undefined && (navigator as Navigator & { deviceMemory?: number }).deviceMemory! < 4;
-    if (canRender3D() && !lowPower) setShow3D(true);
+    const no3d = new URLSearchParams(location.search).has('no3d');
+    if (canRender3D() && !lowPower && !no3d) setShow3D(true);
 
     /* smooth scroll */
     let lenis: Lenis | null = null;
     const onTick = (t: number) => lenis?.raf(t * 1000);
-    if (!reduced) {
-      lenis = new Lenis({ lerp: 0.09, smoothWheel: true });
+    // touch screens keep native scrolling: it runs on the compositor and is already the smoothest option on iOS/Android
+    if (!reduced && window.matchMedia('(pointer: fine)').matches) {
+      lenis = new Lenis({ lerp: 0.1, smoothWheel: true, wheelMultiplier: 0.95, touchMultiplier: 1 });
       lenis.on('scroll', ScrollTrigger.update);
+      if (!(window as Window & { __loaderExit?: boolean }).__loaderExit) {
+        lenis.stop();
+        addEventListener('loader-exit', () => lenis?.start(), { once: true });
+      }
       gsap.ticker.add(onTick);
       gsap.ticker.lagSmoothing(0);
       document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((a) =>
@@ -60,7 +68,11 @@ export function Experience() {
     const toTop = () => (lenis ? lenis.scrollTo(0, { duration: 1.6, easing: (t: number) => 1 - Math.pow(1 - t, 4) }) : scrollTo({ top: 0, behavior: 'smooth' }));
     addEventListener('scroll-top', toTop);
 
-    /* page progress -> camera + progress bar */
+    /* page progress -> camera + progress bar (no layout reads here: self.scroll() is cached by ScrollTrigger) */
+    let vh = window.innerHeight;
+    const onResize = () => (vh = window.innerHeight);
+    addEventListener('resize', onResize, { passive: true });
+    let lastDim = -1;
     const st = ScrollTrigger.create({
       start: 0,
       end: 'max',
@@ -68,11 +80,16 @@ export function Experience() {
         scrollState.progress = self.progress;
         scrollState.velocity = self.getVelocity();
         if (bar.current) bar.current.style.transform = `scaleX(${self.progress})`;
-        if (dim.current) dim.current.style.opacity = String(Math.min(0.42, (window.scrollY / window.innerHeight) * 0.6));
+        const d = Math.round(Math.min(0.42, (self.scroll() / vh) * 0.6) * 100) / 100;
+        if (dim.current && d !== lastDim) { dim.current.style.opacity = String(d); lastDim = d; }
       },
     });
 
-    const ctx = gsap.context(() => {
+    const ctx = gsap.context(() => {});
+    // reveals start as the loading curtain lifts, so the hero choreographs with it instead of finishing behind it
+    const w = window as Window & { __loaderExit?: boolean };
+    const loaderGone = w.__loaderExit ? Promise.resolve() : new Promise<void>((r) => addEventListener('loader-exit', () => r(), { once: true }));
+    loaderGone.then(() => ctx.add(() => {
       if (reduced) return;
       /* split-line headline reveals */
       // split only after web fonts load, and re-split on resize, so line breaks match the final layout
@@ -83,7 +100,7 @@ export function Experience() {
               type: 'lines,words',
               linesClass: 'split-line',
               mask: 'lines',
-              autoSplit: true,
+              autoSplit: !matchMedia('(pointer: coarse)').matches,
               onSplit: (self) =>
                 gsap.from(self.words, {
                   yPercent: 110,
@@ -125,7 +142,8 @@ export function Experience() {
           onUpdate: () => (el.textContent = Math.round(obj.v).toString()),
         });
       });
-    });
+      ScrollTrigger.refresh();
+    }));
 
     /* custom cursor */
     const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
@@ -188,6 +206,7 @@ export function Experience() {
 
     return () => {
       removeEventListener('scroll-top', toTop);
+      removeEventListener('resize', onResize);
       st.kill();
       ctx.revert();
       cleanupCursor();
@@ -202,14 +221,16 @@ export function Experience() {
     <>
       <div className="fixed inset-0 -z-10" aria-hidden>
         {show3D ? (
-          <MountainScene />
+          <div className="scene-fade h-full w-full">
+            <MountainScene />
+          </div>
         ) : (
           <div className="h-full w-full bg-[radial-gradient(ellipse_at_30%_10%,#1a2340_0%,#06070b_60%)]" />
         )}
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,transparent_0%,rgba(6,7,11,0.15)_55%,rgba(6,7,11,0.8)_100%)]" />
         <div ref={dim} className="pointer-events-none absolute inset-0 bg-night opacity-0" />
       </div>
-      <div className="fixed left-0 top-0 z-50 h-[2px] w-full origin-left scale-x-0 bg-glacier" ref={bar} aria-hidden />
+      <div className="fixed left-0 top-0 z-50 h-[2px] w-full origin-left bg-glacier" style={{ transform: 'scaleX(0)' }} ref={bar} aria-hidden />
       <div ref={dot} style={{ opacity: 0 }} className="cursor-ui pointer-events-none fixed left-0 top-0 z-[70] -ml-1 -mt-1 h-2 w-2 rounded-full bg-glacier mix-blend-difference" aria-hidden />
       <div
         ref={ring}

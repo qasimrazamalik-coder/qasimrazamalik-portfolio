@@ -115,12 +115,12 @@ export default async function Home() {
       <header className="fixed inset-x-0 top-0 z-40 before:pointer-events-none before:absolute before:inset-0 before:-bottom-6 before:bg-gradient-to-b before:from-night/95 before:via-night/70 before:to-transparent before:backdrop-blur-md before:[mask-image:linear-gradient(to_bottom,black_55%,transparent)]">
         <div className="relative mx-auto flex max-w-7xl items-center justify-between px-5 py-4 md:px-10">
           <a href="#top" className="group flex items-center gap-2.5" aria-label={`${profile.name} — home`}>
-            <span className="relative flex h-8 w-8 items-center justify-center rounded-full border border-line bg-panel/60 backdrop-blur">
+            <span className="relative flex h-8 w-8 items-center justify-center rounded-full border border-line bg-panel/85">
               <svg viewBox="0 0 24 24" className="h-4 w-4 text-glacier" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden><path d="M2 19 9 7l4 6 3-4 6 10H2Z" /></svg>
             </span>
             <span className="text-sm font-medium tracking-tight"><Roll>Qasim Raza Malik</Roll></span>
           </a>
-          <nav aria-label="Primary" className="hidden items-center gap-1 rounded-full border border-line bg-panel/50 p-1 backdrop-blur-md md:flex">
+          <nav aria-label="Primary" className="hidden items-center gap-1 rounded-full border border-line bg-panel/85 p-1 md:flex">
             {nav.map((n) => (
               <a key={n.href} href={n.href} className="group rounded-full px-4 py-1.5 text-sm text-mist transition-colors hover:text-snow">
                 <Roll>{n.label}</Roll>
@@ -141,7 +141,7 @@ export default async function Home() {
         {/* HERO */}
         <section id="top" className="relative flex min-h-[100svh] flex-col justify-end px-5 pb-14 pt-32 md:px-10">
           <div className="mx-auto w-full max-w-7xl">
-            <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-panel/50 px-3 py-1.5 font-mono text-[11px] uppercase tracking-widest text-mist backdrop-blur">
+            <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-panel/85 px-3 py-1.5 font-mono text-[11px] uppercase tracking-widest text-mist">
               <span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-glacier opacity-60" /><span className="relative inline-flex h-2 w-2 rounded-full bg-glacier" /></span>
               {profile.availability}
             </p>
@@ -159,7 +159,7 @@ export default async function Home() {
                 <a href="#work" data-magnetic className="group rounded-full bg-glacier px-6 py-3.5 font-medium text-night">
                   <span className="roll"><span>See the work</span><span aria-hidden className="!text-night">Scroll the lab ↓</span></span>
                 </a>
-                <a href={profile.github} target="_blank" rel="noopener noreferrer" data-magnetic className="group rounded-full border border-line bg-panel/50 px-6 py-3.5 backdrop-blur">
+                <a href={profile.github} target="_blank" rel="noopener noreferrer" data-magnetic className="group rounded-full border border-line bg-panel/85 px-6 py-3.5">
                   <Roll>GitHub ↗</Roll>
                 </a>
               </div>
@@ -181,7 +181,7 @@ export default async function Home() {
               { n: languages, l: 'languages shipped', s: '' },
               { n: 6, l: 'engineering tracks', s: '' },
             ].map((x) => (
-              <div key={x.l} className="bg-ink/80 p-6 backdrop-blur-md md:p-8">
+              <div key={x.l} className="bg-ink/90 p-6 md:p-8">
                 <p className="text-4xl font-medium tracking-tight md:text-5xl"><span data-count={x.n}>{x.n}</span><span className="text-glacier">{x.s}</span></p>
                 <p className="mt-2 text-sm text-mist">{x.l}</p>
               </div>
@@ -203,7 +203,7 @@ export default async function Home() {
               </div>
               <ul className="mt-8 flex flex-wrap gap-2" aria-label="Roles">
                 {roles.map((r) => (
-                  <li key={r} className="rounded-full border border-line bg-panel/50 px-3 py-1 text-xs text-snow/90 backdrop-blur">{r}</li>
+                  <li key={r} className="rounded-full border border-line bg-panel/85 px-3 py-1 text-xs text-snow/90">{r}</li>
                 ))}
               </ul>
             </div>
@@ -231,7 +231,7 @@ export default async function Home() {
             </h2>
             <div className="mt-14 grid gap-5 md:grid-cols-2" data-stagger>
               {ventures.map((v, i) => (
-                <article key={v.name} data-tilt className={`spot group relative overflow-hidden rounded-3xl border border-line bg-ink/70 backdrop-blur-md [transform-style:preserve-3d] ${i === 0 ? 'md:col-span-2 md:grid md:grid-cols-[1.1fr_1fr]' : ''}`}>
+                <article key={v.name} data-tilt className={`spot group relative overflow-hidden rounded-3xl border border-line bg-ink/90 [transform-style:preserve-3d] ${i === 0 ? 'md:col-span-2 md:grid md:grid-cols-[1.1fr_1fr]' : ''}`}>
                   <div className="relative aspect-[16/10] overflow-hidden border-b border-line md:border-b-0" style={{ background: `radial-gradient(circle at 30% 20%, ${v.accent}33, transparent 60%), #0c0e15` }}>
                     {v.image ? (
                       <Image src={v.image} alt={`${v.name} website screenshot`} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover object-top" data-parallax />
@@ -278,7 +278,7 @@ export default async function Home() {
                     rel="noopener noreferrer"
                     data-cursor="view"
                     data-cursor-label="Open"
-                    className="group grid grid-cols-[2.5rem_1fr] items-baseline gap-x-4 gap-y-2 border-b border-line py-7 transition-colors hover:bg-panel/40 md:grid-cols-[3rem_1.1fr_1.4fr_auto] md:px-4"
+                    className="group grid grid-cols-[2.5rem_1fr] items-baseline gap-x-4 gap-y-2 border-b border-line py-7 transition-colors hover:bg-panel/85 md:grid-cols-[3rem_1.1fr_1.4fr_auto] md:px-4"
                   >
                     <span className="font-mono text-xs text-mist">{String(i + 1).padStart(2, '0')}</span>
                     <h3 className="text-2xl font-medium tracking-tight transition-transform duration-500 group-hover:translate-x-2 md:text-3xl">
@@ -302,7 +302,7 @@ export default async function Home() {
 
         {/* EXPLORER */}
         <section id="explore" className="px-5 pb-28 md:px-10 md:pb-40">
-          <div className="mx-auto max-w-7xl rounded-[2rem] border border-line bg-night/60 p-6 backdrop-blur-xl md:p-12">
+          <div className="mx-auto max-w-7xl rounded-[2rem] border border-line bg-night/85 p-6 md:p-12">
             <Eyebrow n="05">The full lab</Eyebrow>
             <h2 className="mt-6 text-4xl font-medium leading-[1.02] tracking-tight md:text-5xl" data-split>
               {projects.length} builds. Six disciplines. Zero lorem ipsum.
@@ -325,7 +325,7 @@ export default async function Home() {
               <ul className="mt-10 grid gap-3 md:grid-cols-2" data-stagger>
                 {(latest.length ? latest : recent).map((r) => (
                   <li key={r.name}>
-                    <a href={r.url} target="_blank" rel="noopener noreferrer" className="group flex items-start justify-between gap-6 rounded-2xl border border-line bg-ink/60 p-5 backdrop-blur transition-colors hover:border-glacier/40">
+                    <a href={r.url} target="_blank" rel="noopener noreferrer" className="group flex items-start justify-between gap-6 rounded-2xl border border-line bg-ink/90 p-5 transition-colors hover:border-glacier/40">
                       <span>
                         <span className="font-mono text-sm text-snow"><Roll>{r.name}</Roll></span>
                         {r.description && <span className="mt-1.5 block text-sm text-mist">{r.description}</span>}
@@ -354,18 +354,18 @@ export default async function Home() {
             </div>
             <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-stagger>
               {capabilities.map((c, i) => (
-                <article key={c.id} data-tilt className="spot rounded-2xl border border-line bg-ink/70 p-6 backdrop-blur-md [transform-style:preserve-3d]">
+                <article key={c.id} data-tilt className="spot rounded-2xl border border-line bg-ink/90 p-6 [transform-style:preserve-3d]">
                   <p className="font-mono text-[11px] text-glacier">{String(i + 1).padStart(2, '0')}</p>
                   <h3 className="mt-4 text-xl font-medium tracking-tight">{c.title}</h3>
                   <p className="mt-3 text-sm leading-relaxed text-mist">{c.body}</p>
                 </article>
               ))}
             </div>
-            <div className="mt-10 rounded-2xl border border-line bg-night/60 p-6 backdrop-blur-md">
+            <div className="mt-10 rounded-2xl border border-line bg-night/85 p-6">
               <p className="font-mono text-[11px] uppercase tracking-widest text-mist">AI tools I ship with every day</p>
               <ul className="mt-4 flex flex-wrap gap-2">
                 {aiTools.map((t) => (
-                  <li key={t} className="group rounded-full border border-line bg-panel/60 px-4 py-2 text-sm text-snow transition-colors hover:border-glacier hover:text-glacier">{t}</li>
+                  <li key={t} className="group rounded-full border border-line bg-panel/85 px-4 py-2 text-sm text-snow transition-colors hover:border-glacier hover:text-glacier">{t}</li>
                 ))}
               </ul>
             </div>
@@ -374,7 +374,7 @@ export default async function Home() {
 
         {/* SNAPCHAT LENSES */}
         <section id="lenses" className="px-5 pb-28 md:px-10 md:pb-40">
-          <div className="mx-auto max-w-7xl rounded-[2rem] border border-line bg-[radial-gradient(circle_at_85%_10%,rgba(255,252,0,0.12),transparent_45%)] bg-night/60 p-6 backdrop-blur-xl md:p-12">
+          <div className="mx-auto max-w-7xl rounded-[2rem] border border-line bg-[radial-gradient(circle_at_85%_10%,rgba(255,252,0,0.12),transparent_45%)] bg-night/85 p-6 md:p-12">
             <Eyebrow n="08">Snapchat Lenses</Eyebrow>
             <div className="mt-6 grid gap-10 md:grid-cols-[0.8fr_1.2fr]">
               <div>
@@ -386,7 +386,7 @@ export default async function Home() {
               </div>
               <div className="grid gap-4 sm:grid-cols-2" data-stagger>
                 {lenses.groups.map((g) => (
-                  <div key={g.title} className="rounded-2xl border border-line bg-ink/70 p-5">
+                  <div key={g.title} className="rounded-2xl border border-line bg-ink/90 p-5">
                     <h3 className="font-mono text-[11px] uppercase tracking-widest text-[#fffc00]">{g.title}</h3>
                     <ul className="mt-3 space-y-1.5">
                       {g.items.map((n) => (<li key={n} className="flex items-center gap-2 text-snow/90"><span className="h-1.5 w-1.5 rounded-full bg-[#fffc00]" aria-hidden />{n}</li>))}
@@ -405,14 +405,14 @@ export default async function Home() {
             <h2 className="mt-6 text-4xl font-medium leading-[1.02] tracking-tight md:text-6xl" data-split>
               Three games. One <em className="font-serif font-normal text-glacier">break.</em>
             </h2>
-            <div className="mt-12 rounded-[2rem] border border-line bg-night/60 p-6 backdrop-blur-xl md:p-12">
+            <div className="mt-12 rounded-[2rem] border border-line bg-night/85 p-6 md:p-12">
               <Arcade />
             </div>
           </div>
         </section>
 
         {/* STACK MARQUEE */}
-        <section aria-label="Tech stack" className="marquee-wrap overflow-hidden border-y border-line bg-ink/60 py-6 backdrop-blur">
+        <section aria-label="Tech stack" className="marquee-wrap overflow-hidden border-y border-line bg-ink/90 py-6">
           <div className="marquee">
             {[0, 1].map((k) => (
               <div key={k} className="flex shrink-0 items-center gap-10 pr-10" aria-hidden={k === 1}>
@@ -434,7 +434,7 @@ export default async function Home() {
               <h2 className="mt-6 text-4xl font-medium leading-[1.02] tracking-tight md:text-6xl" data-split>From freelance builds to AI engineering.</h2>
               <ul className="mt-10 space-y-4">
                 {education.map((e) => (
-                  <li key={e.school} className="rounded-2xl border border-line bg-ink/60 p-5 backdrop-blur" data-reveal>
+                  <li key={e.school} className="rounded-2xl border border-line bg-ink/90 p-5" data-reveal>
                     <p className="font-mono text-[10px] uppercase tracking-widest text-glacier">{e.status}</p>
                     <p className="mt-2 text-lg text-snow">{e.degree}</p>
                     <p className="text-sm text-mist">{e.school}</p>
@@ -469,14 +469,14 @@ export default async function Home() {
             <Eyebrow n="11">Toolbox</Eyebrow>
             <ul className="mt-8 flex flex-wrap items-center gap-3" aria-label="Core technologies">
               {techIcons.map((t) => (
-                <li key={t.name} title={t.name} className="group flex h-14 w-14 items-center justify-center rounded-2xl border border-line bg-panel/60 backdrop-blur transition-transform duration-300 hover:-translate-y-1 hover:border-glacier">
+                <li key={t.name} title={t.name} className="group flex h-14 w-14 items-center justify-center rounded-2xl border border-line bg-panel/85 transition-transform duration-300 hover:-translate-y-1 hover:border-glacier">
                   <Image src={t.src} alt={t.name} width={32} height={32} className="h-8 w-8 object-contain transition-transform duration-500 group-hover:rotate-[8deg] group-hover:scale-110" />
                 </li>
               ))}
             </ul>
             <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-stagger>
               {stack.map((s) => (
-                <div key={s.group} data-tilt className="spot rounded-2xl border border-line bg-ink/60 p-6 backdrop-blur-md [transform-style:preserve-3d]">
+                <div key={s.group} data-tilt className="spot rounded-2xl border border-line bg-ink/90 p-6 [transform-style:preserve-3d]">
                   <h3 className="font-mono text-[11px] uppercase tracking-widest text-glacier">{s.group}</h3>
                   <ul className="mt-4 flex flex-wrap gap-2">
                     {s.items.map((t) => (
@@ -497,7 +497,7 @@ export default async function Home() {
             <div className="mt-10">
               <Carousel label="Client websites" autoplay={4500}>
                 {clients.map((c) => (
-                  <a key={c.name} href={c.url ?? '#contact'} target={c.url ? '_blank' : undefined} rel="noopener noreferrer" data-cursor="view" data-cursor-label={c.url ? 'Visit' : 'Ask'} draggable={false} className="group block overflow-hidden rounded-3xl border border-line bg-ink/80 backdrop-blur transition-colors hover:border-glacier/40">
+                  <a key={c.name} href={c.url ?? '#contact'} target={c.url ? '_blank' : undefined} rel="noopener noreferrer" data-cursor="view" data-cursor-label={c.url ? 'Visit' : 'Ask'} draggable={false} className="group block overflow-hidden rounded-3xl border border-line bg-ink/90 transition-colors hover:border-glacier/40">
                     <div className="relative aspect-[16/10] overflow-hidden bg-[#0c0e15]">
                       <Image src={c.image} alt={`${c.name} website mockup`} fill draggable={false} sizes="(min-width: 1024px) 42vw, (min-width: 640px) 60vw, 82vw" className="object-cover object-top transition-transform duration-[1.2s] ease-out group-hover:scale-105" />
                     </div>
@@ -519,7 +519,7 @@ export default async function Home() {
               <div className="mt-6">
                 <Carousel label="Services" itemClass="w-[72%] sm:w-[44%] lg:w-[24%]" depth={false}>
                   {services.map((sv, i) => (
-                    <article key={sv.title} className="group flex h-full flex-col rounded-3xl border border-line bg-ink/70 p-6 backdrop-blur-md transition-colors hover:border-glacier/40">
+                    <article key={sv.title} className="group flex h-full flex-col rounded-3xl border border-line bg-ink/90 p-6 transition-colors hover:border-glacier/40">
                       <div className="flex items-center justify-between">
                         <Image src={sv.icon} alt="" width={56} height={56} draggable={false} className="h-14 w-14 object-contain transition-transform duration-500 group-hover:rotate-6 group-hover:scale-110" />
                         <span className="font-mono text-[11px] text-glacier">{String(i + 1).padStart(2, '0')}</span>
@@ -557,7 +557,7 @@ export default async function Home() {
 
         {/* CONTACT */}
         <section id="contact" className="px-5 pb-20 md:px-10">
-          <div className="relative isolate mx-auto max-w-7xl overflow-hidden rounded-[2rem] border border-line bg-night/70 p-6 md:p-14">
+          <div className="relative isolate mx-auto max-w-7xl overflow-hidden rounded-[2rem] border border-line bg-night/90 p-6 md:p-14">
             <Image src="/img/abbottabad/miranjani-sunset.jpg" alt="" fill sizes="100vw" className="kenburns -z-10 object-cover opacity-35" />
             <div className="absolute inset-0 -z-10 bg-gradient-to-r from-night via-night/85 to-night/40" />
             <Eyebrow n="14">Summit</Eyebrow>

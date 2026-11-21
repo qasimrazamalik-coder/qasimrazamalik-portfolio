@@ -6,6 +6,8 @@ import * as THREE from 'three';
 import { scrollState } from '@/lib/scrollState';
 import { horizon } from '@/content/places';
 
+const MOBILE = typeof window !== 'undefined' && (window.innerWidth < 768 || matchMedia('(pointer: coarse)').matches);
+
 /* ---------- deterministic noise (no deps) ---------- */
 function hash(x: number, y: number) {
   const s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453123;
@@ -92,8 +94,7 @@ const BEACON = new THREE.Vector3(BEACON_LOCAL.x, heightAt(BEACON_LOCAL.x, BEACON
 function Terrain() {
   const mat = useRef<THREE.ShaderMaterial>(null);
   const geo = useMemo(() => {
-    const mobile = typeof window !== 'undefined' && window.innerWidth < 768;
-    const g = new THREE.PlaneGeometry(90, 70, mobile ? 150 : 260, mobile ? 115 : 200);
+    const g = new THREE.PlaneGeometry(90, 70, MOBILE ? 100 : 190, MOBILE ? 78 : 146);
     const pos = g.attributes.position as THREE.BufferAttribute;
     for (let i = 0; i < pos.count; i++) {
       pos.setZ(i, heightAt(pos.getX(i), pos.getY(i)));
@@ -154,45 +155,43 @@ function Stars({ count = 1800 }) {
   );
 }
 
-/* ---------- drifting snow ---------- */
+/* ---------- drifting snow (animated on the GPU) ---------- */
 function Snow({ count = 700 }) {
-  const ref = useRef<THREE.Points>(null);
-  const dotTex = useMemo(() => {
-    const c = document.createElement('canvas');
-    c.width = c.height = 32;
-    const g = c.getContext('2d')!;
-    const grd = g.createRadialGradient(16, 16, 0, 16, 16, 16);
-    grd.addColorStop(0, 'rgba(255,255,255,1)');
-    grd.addColorStop(1, 'rgba(255,255,255,0)');
-    g.fillStyle = grd;
-    g.fillRect(0, 0, 32, 32);
-    return new THREE.CanvasTexture(c);
-  }, []);
+  const mat = useRef<THREE.ShaderMaterial>(null);
   const geo = useMemo(() => {
     const g = new THREE.BufferGeometry();
-    const p = new Float32Array(count * 3);
+    const p = new Float32Array(count * 3), sd = new Float32Array(count);
     for (let i = 0; i < count; i++) {
       p[i * 3] = (hash(i, 7) - 0.5) * 30;
-      p[i * 3 + 1] = hash(i, 8) * 14 - 2;
+      p[i * 3 + 1] = hash(i, 8) * 14;
       p[i * 3 + 2] = -hash(i, 9) * 40 + 4;
+      sd[i] = hash(i, 4);
     }
     g.setAttribute('position', new THREE.BufferAttribute(p, 3));
+    g.setAttribute('aSeed', new THREE.BufferAttribute(sd, 1));
     return g;
   }, [count]);
-  useFrame((_, dt) => {
-    const pos = ref.current?.geometry.attributes.position as THREE.BufferAttribute | undefined;
-    if (!pos) return;
-    for (let i = 0; i < count; i++) {
-      let y = pos.getY(i) - dt * (0.25 + hash(i, 4) * 0.4);
-      if (y < -2) y = 12;
-      pos.setY(i, y);
-      pos.setX(i, pos.getX(i) + Math.sin(y * 0.8 + i) * dt * 0.08);
-    }
-    pos.needsUpdate = true;
-  });
+  useFrame((st) => mat.current && (mat.current.uniforms.uTime.value = st.clock.elapsedTime));
   return (
-    <points ref={ref} geometry={geo}>
-      <pointsMaterial size={0.05} color="#dfe8ff" map={dotTex} alphaTest={0.01} transparent opacity={0.5} depthWrite={false} sizeAttenuation />
+    <points geometry={geo} frustumCulled={false}>
+      <shaderMaterial
+        ref={mat}
+        transparent
+        depthWrite={false}
+        uniforms={{ uTime: { value: 0 } }}
+        vertexShader={`attribute float aSeed; uniform float uTime;
+          void main(){
+            vec3 p = position;
+            float fall = uTime * (0.25 + aSeed * 0.4);
+            p.y = mod(p.y - fall, 14.0) - 2.0;
+            p.x += sin(p.y * 0.8 + aSeed * 40.0) * 0.12;
+            vec4 mv = modelViewMatrix * vec4(p, 1.0);
+            gl_PointSize = 2.6 * (8.0 / -mv.z);
+            gl_Position = projectionMatrix * mv;
+          }`}
+        fragmentShader={`void main(){ float d = length(gl_PointCoord - 0.5); if (d > 0.5) discard;
+          gl_FragColor = vec4(0.87, 0.91, 1.0, 0.5 * smoothstep(0.5, 0.0, d)); }`}
+      />
     </points>
   );
 }
@@ -293,7 +292,7 @@ function coverScale(tex: THREE.Texture, planeAspect: number) {
 function PhotoRange({ urls }: { urls: [string, string] }) {
   const mat = useRef<THREE.ShaderMaterial>(null);
   const W = 190, H = 95;
-  const geo = useMemo(() => new THREE.PlaneGeometry(W, H, 180, 90), []);
+  const geo = useMemo(() => new THREE.PlaneGeometry(W, H, MOBILE ? 64 : 128, MOBILE ? 32 : 64), []);
   const uniforms = useMemo(
     () => ({
       uA: { value: null as THREE.Texture | null }, uB: { value: null as THREE.Texture | null },
@@ -355,37 +354,65 @@ function Rig() {
 }
 
 function Visibility() {
-  const { gl, setFrameloop } = useThree() as unknown as { gl: THREE.WebGLRenderer; setFrameloop: (m: 'always' | 'never') => void };
+  const { gl, setFrameloop } = useThree() as unknown as { gl: THREE.WebGLRenderer; setFrameloop: (m: 'always' | 'never' | 'demand') => void };
   useEffect(() => {
-    const on = () => setFrameloop(document.hidden ? 'never' : 'always');
+    const on = () => setFrameloop(document.hidden ? 'never' : MOBILE ? 'demand' : 'always');
     document.addEventListener('visibilitychange', on);
     return () => document.removeEventListener('visibilitychange', on);
   }, [gl, setFrameloop]);
   return null;
 }
 
+/** On phones the landscape renders at 30 fps so scrolling and pinned sections keep the rest of each frame. */
+function Throttle({ fps }: { fps: number }) {
+  const invalidate = useThree((st) => st.invalidate);
+  useEffect(() => {
+    let raf = 0, last = 0;
+    const step = (t: number) => {
+      if (t - last >= 1000 / fps - 2) { last = t; invalidate(); }
+      raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [fps, invalidate]);
+  return null;
+}
+
+function SceneReady() {
+  const done = useRef(false);
+  useFrame(() => {
+    if (done.current) return;
+    done.current = true;
+    requestAnimationFrame(() => window.dispatchEvent(new Event('scene-ready')));
+  });
+  return null;
+}
+
 export default function MountainScene() {
   const urls = useMemo(
-    () => (typeof window !== 'undefined' && window.innerWidth < 768 ? horizon.mobile : horizon.desktop) as [string, string],
+    () => (MOBILE ? horizon.mobile : horizon.desktop) as [string, string],
     []
   );
   return (
     <Canvas
-      dpr={typeof window !== 'undefined' && window.innerWidth < 768 ? [1, 1.25] : [1, 1.75]}
+      dpr={MOBILE ? 1 : [1, 1.5]}
+      frameloop={MOBILE ? 'demand' : 'always'}
       camera={{ fov: 50, near: 0.1, far: 200, position: [0, 1.6, 8] }}
-      gl={{ antialias: true, powerPreference: 'high-performance', alpha: false }}
+      gl={{ antialias: !MOBILE, powerPreference: 'high-performance', alpha: false, stencil: false }}
       onCreated={({ gl }) => gl.setClearColor('#06070b')}
       aria-hidden
     >
       <fog attach="fog" args={['#06070b', 20, 90]} />
       <PhotoRange urls={urls} />
-      <Stars />
+      <Stars count={MOBILE ? 800 : 1600} />
       <Moon />
       <Terrain />
       <Beacon />
-      <Snow />
+      <Snow count={MOBILE ? 350 : 700} />
       <Rig />
       <Visibility />
+      <SceneReady />
+      {MOBILE && <Throttle fps={30} />}
     </Canvas>
   );
 }

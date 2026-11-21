@@ -153,7 +153,7 @@ export function Arcade() {
       <div className="relative mx-auto w-full max-w-[360px] overflow-hidden rounded-2xl border border-line">
         <canvas ref={cv} width={W} height={H} className="block aspect-[3/4] w-full touch-none bg-ink" aria-label={`${meta.name} game canvas`} />
         {state !== 'play' && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-night/70 backdrop-blur-sm">
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-night/90">
             {state === 'over' && <p className="text-3xl font-medium text-snow">Score {score}</p>}
             <button onClick={start} className="rounded-full bg-glacier px-6 py-3 font-medium text-night">{state === 'over' ? 'Play again' : `Play ${meta.name}`}</button>
           </div>

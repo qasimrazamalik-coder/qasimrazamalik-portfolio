@@ -54,7 +54,7 @@ export function WorkExplorer({ projects, tracks }: Props) {
                 rel="noopener noreferrer"
                 data-cursor="view"
                 data-cursor-label="Code"
-                className="spot group flex h-full flex-col rounded-2xl border border-line bg-ink/70 p-5 backdrop-blur-md transition-colors hover:border-glacier/40"
+                className="spot group flex h-full flex-col rounded-2xl border border-line bg-ink/90 p-5 transition-colors hover:border-glacier/40"
                 onPointerMove={(e) => {
                   const r = e.currentTarget.getBoundingClientRect();
                   e.currentTarget.style.setProperty('--mx', `${e.clientX - r.left}px`);
@@ -88,7 +88,7 @@ export function WorkExplorer({ projects, tracks }: Props) {
           <button
             onClick={() => setExpanded((e) => !e)}
             data-magnetic
-            className="group rounded-full border border-line bg-panel/60 px-6 py-3 text-sm text-snow backdrop-blur transition-colors hover:border-glacier"
+            className="group rounded-full border border-line bg-panel/85 px-6 py-3 text-sm text-snow transition-colors hover:border-glacier"
           >
             <span className="roll">
               <span>{expanded ? 'Show fewer' : `Show all ${full.length}`}</span>
