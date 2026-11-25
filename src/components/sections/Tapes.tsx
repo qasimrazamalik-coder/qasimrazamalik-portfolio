@@ -52,7 +52,7 @@ function Tape({ items, dir, tilt, tone }: { items: readonly string[]; dir: 1 | -
 
 export function Tapes({ proof, stack }: { proof: readonly string[]; stack: readonly string[] }) {
   return (
-    <section aria-label="What I ship and what I ship it with" className="relative my-16 h-44 overflow-hidden md:my-24 md:h-56">
+    <section aria-label="What I ship and what I ship it with" className="relative my-4 h-32 overflow-hidden md:my-8 md:h-44">
       <div className="absolute inset-x-0 top-1/2 -translate-y-1/2"><Tape items={stack} dir={-1} tilt={3} tone="dark" /></div>
       <div className="absolute inset-x-0 top-1/2 -translate-y-1/2"><Tape items={proof} dir={1} tilt={-2.5} tone="accent" /></div>
     </section>

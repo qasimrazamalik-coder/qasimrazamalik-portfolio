@@ -99,6 +99,28 @@ function bugs(ctx: CanvasRenderingContext2D, cv: HTMLCanvasElement, done: Done):
 
 const RUN = { avalanche, stack: stackGame, bugs };
 
+function preview(ctx: CanvasRenderingContext2D, id: GameId) {
+  const accent = getComputedStyle(document.documentElement).getPropertyValue('--color-glacier').trim() || C.glacier;
+  ctx.fillStyle = C.bg; ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = C.line; ctx.lineWidth = 1;
+  for (let y = 40; y < H; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+  if (id === 'avalanche') {
+    ctx.fillStyle = C.mist;
+    [[60, 90, 14], [190, 160, 20], [290, 70, 11], [120, 260, 17], [250, 300, 13]].forEach(([x, y, r]) => { ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill(); });
+    ctx.fillStyle = accent; ctx.beginPath(); ctx.moveTo(W / 2, H - 70); ctx.lineTo(W / 2 - 16, H - 40); ctx.lineTo(W / 2 + 16, H - 40); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = C.line; ctx.fillRect(0, H - 34, W, 2);
+  } else if (id === 'stack') {
+    const blocks = [[60, 240], [72, 220], [80, 200], [95, 180], [100, 160], [118, 140]];
+    blocks.forEach(([x, w], i) => { ctx.fillStyle = i === blocks.length - 1 ? accent : i % 2 ? C.mist : C.snow; ctx.globalAlpha = i === blocks.length - 1 ? 1 : 0.55; ctx.fillRect(x, H - 50 - i * 34, w, 28); });
+    ctx.globalAlpha = 1;
+  } else {
+    [[70, 120], [250, 90], [160, 230], [90, 330], [280, 300], [200, 400]].forEach(([x, y], i) => {
+      ctx.fillStyle = i === 2 ? accent : C.ember; ctx.beginPath(); ctx.ellipse(x, y, 11, 15, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = C.mist; ctx.beginPath(); ctx.moveTo(x - 14, y - 8); ctx.lineTo(x + 14, y + 8); ctx.moveTo(x + 14, y - 8); ctx.lineTo(x - 14, y + 8); ctx.stroke();
+    });
+  }
+}
+
 export function Arcade() {
   const [game, setGame] = useState<GameId>('avalanche');
   const [state, setState] = useState<'ready' | 'play' | 'over'>('ready');
@@ -115,7 +137,7 @@ export function Arcade() {
   useEffect(() => {
     const ctx = cv.current?.getContext('2d');
     if (!ctx || state === 'play') return;
-    ctx.fillStyle = C.bg; ctx.fillRect(0, 0, W, H);
+    preview(ctx, game);
   }, [game, state]);
 
   const start = () => {
@@ -138,22 +160,33 @@ export function Arcade() {
   return (
     <div className="grid gap-8 md:grid-cols-[1fr_auto] md:items-center">
       <div>
-        <div className="flex flex-wrap gap-2" role="tablist" aria-label="Choose a game">
-          {GAMES.map((g) => (
-            <button key={g.id} role="tab" aria-selected={g.id === game} onClick={() => { api.current?.stop(); setGame(g.id); setState('ready'); }} className={`rounded-full px-4 py-2 text-sm transition-colors ${g.id === game ? 'bg-glacier text-night' : 'border border-line text-mist hover:text-snow'}`}>
-              {g.name}
-            </button>
+        <ul className="grid gap-3" role="tablist" aria-label="Choose a game">
+          {GAMES.map((g, i) => (
+            <li key={g.id}>
+              <button
+                role="tab"
+                aria-selected={g.id === game}
+                onClick={() => { api.current?.stop(); setGame(g.id); setState('ready'); }}
+                className={`group flex w-full items-center gap-4 rounded-2xl border p-4 text-left transition-colors md:p-5 ${g.id === game ? 'border-glacier bg-glacier/10' : 'border-line bg-ink hover:border-mist/40'}`}
+              >
+                <span className={`font-mono text-xs ${g.id === game ? 'text-glacier' : 'text-mist'}`}>{String(i + 1).padStart(2, '0')}</span>
+                <span className="flex-1">
+                  <span className="block text-lg text-snow">{g.name}</span>
+                  <span className="mt-0.5 block text-sm text-mist">{g.how}</span>
+                </span>
+                <span className="text-right font-mono text-[10px] uppercase tracking-widest text-mist">
+                  Best<span className="mt-0.5 block text-base text-glacier">{best[g.id] ?? 0}</span>
+                </span>
+              </button>
+            </li>
           ))}
-        </div>
-        <p className="mt-5 text-lg text-snow">{meta.name}</p>
-        <p className="mt-1 text-mist">{meta.how}</p>
-        <p className="mt-4 font-mono text-[11px] uppercase tracking-widest text-mist">Best: <span className="text-glacier">{best[game] ?? 0}</span></p>
-        <p className="mt-6 max-w-sm text-sm text-mist">Each game is under 80 lines of canvas code — no engine, no assets, 60 fps. The same discipline goes into my Snapchat Lens games.</p>
+        </ul>
+        <p className="mt-6 max-w-md text-sm text-mist">Each game is under 80 lines of canvas code — no engine, no assets, 60 fps. The same discipline goes into my Snapchat Lens games.</p>
       </div>
       <div className="relative mx-auto w-full max-w-[360px] overflow-hidden rounded-2xl border border-line">
         <canvas ref={cv} width={W} height={H} className="block aspect-[3/4] w-full touch-none bg-ink" aria-label={`${meta.name} game canvas`} />
         {state !== 'play' && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-night/90">
+          <div className="absolute inset-0 flex flex-col items-center justify-end gap-3 bg-gradient-to-t from-night via-night/60 to-night/10 pb-10">
             {state === 'over' && <p className="text-3xl font-medium text-snow">Score {score}</p>}
             <button onClick={start} className="rounded-full bg-glacier px-6 py-3 font-medium text-night">{state === 'over' ? 'Play again' : `Play ${meta.name}`}</button>
           </div>

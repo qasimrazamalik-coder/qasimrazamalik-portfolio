@@ -24,17 +24,19 @@ export function FieldNotes() {
   useEffect(() => {
     const el = wrap.current, tr = track.current;
     if (!el || !tr) return;
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    // touch screens and small widths get a native swipe row: no long pin to scroll through
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches || matchMedia('(pointer: coarse), (max-width: 767px)').matches) return;
     gsap.registerPlugin(ScrollTrigger);
     const ctx = gsap.context(() => {
       const dist = () => Math.max(0, tr.scrollWidth - innerWidth);
+      const travel = () => dist() * 0.6; // scroll distance: the reel moves faster than the page
       const tween = gsap.to(tr, {
         x: () => -dist(),
         ease: 'none',
         scrollTrigger: {
           trigger: el,
           start: 'top top',
-          end: () => `+=${dist()}`,
+          end: () => `+=${travel()}`,
           pin: true,
           scrub: 0.6,
           invalidateOnRefresh: true,
@@ -53,7 +55,7 @@ export function FieldNotes() {
           scrollTrigger: { trigger: img.parentElement, containerAnimation: tween, start: 'left right', end: 'right left', scrub: true },
         });
       });
-      if (names.current) gsap.fromTo(names.current, { xPercent: 0 }, { xPercent: -35, ease: 'none', scrollTrigger: { trigger: el, start: 'top top', end: () => `+=${dist()}`, scrub: 1 } });
+      if (names.current) gsap.fromTo(names.current, { xPercent: 0 }, { xPercent: -35, ease: 'none', scrollTrigger: { trigger: el, start: 'top top', end: () => `+=${travel()}`, scrub: 1 } });
     }, el);
     const imgs = Array.from(tr.querySelectorAll('img'));
     let left = imgs.length;
@@ -63,7 +65,7 @@ export function FieldNotes() {
   }, []);
 
   return (
-    <section ref={wrap} id="abbottabad" aria-label="Abbottabad, frame by frame" className="relative flex min-h-[100svh] flex-col justify-center overflow-hidden py-16 md:py-20">
+    <section ref={wrap} id="abbottabad" aria-label="Abbottabad, frame by frame" className="relative flex flex-col justify-center overflow-hidden py-12 md:min-h-[100svh] md:py-16">
       <p ref={names} aria-hidden className="pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 whitespace-nowrap will-change-transform font-medium uppercase leading-none tracking-[-0.04em] text-transparent [-webkit-text-stroke:1px_rgba(124,243,214,0.14)] text-[22vw] md:text-[16vw]">
         Abbottabad · Thandiani · Miranjani · Shimla Hill · Mukshpuri · Galyat
       </p>
@@ -81,9 +83,9 @@ export function FieldNotes() {
         <p className="hidden max-w-xs text-sm text-mist md:block">Real photographs of the hills around home. Two of them form the horizon of the 3D valley behind this page. Keep scrolling.</p>
       </div>
 
-      <div ref={track} className="no-scrollbar relative flex gap-5 overflow-x-auto px-5 will-change-transform motion-safe:overflow-visible md:gap-8 md:px-10">
+      <div ref={track} className="no-scrollbar relative flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 [-webkit-overflow-scrolling:touch] md:snap-none md:gap-8 md:overflow-visible md:px-10 md:will-change-transform">
         {places.map((p, i) => (
-          <figure key={p.slug} className="group relative w-[82vw] shrink-0 sm:w-[60vw] lg:w-[44vw]">
+          <figure key={p.slug} className="group relative w-[84vw] shrink-0 snap-center sm:w-[60vw] lg:w-[44vw]">
             <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-line bg-ink md:aspect-[16/10]">
               <Image
                 src={p.src}
@@ -101,7 +103,7 @@ export function FieldNotes() {
             <motion.figcaption
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ amount: 0.4 }}
+              viewport={{ amount: 0.3, once: true }}
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
               className="absolute inset-x-5 bottom-5 md:inset-x-7 md:bottom-7"
             >

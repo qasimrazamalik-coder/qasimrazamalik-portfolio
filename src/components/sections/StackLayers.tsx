@@ -25,13 +25,13 @@ function usedIn(items: readonly string[]) {
 export function StackLayers({ groups }: { groups: readonly { group: string; items: readonly string[] }[] }) {
   const HEAD = 52; // px per collapsed tab
   return (
-    <div className="relative mt-12 border-t border-line">
+    <div className="relative mt-10 border-t border-line">
       {groups.map((g, i) => {
         const used = usedIn(g.items);
         return (
           <article
             key={g.group}
-            className="sticky border-b border-line bg-night"
+            className="relative border-b border-line bg-night md:sticky"
             style={{ top: `calc(4.5rem + ${i * HEAD}px)`, zIndex: i + 1 }}
             aria-labelledby={`layer-${i}`}
           >
@@ -42,9 +42,9 @@ export function StackLayers({ groups }: { groups: readonly { group: string; item
               </h3>
               <span className="hidden font-mono text-[10px] uppercase tracking-[0.25em] text-mist sm:block">{ROLE[g.group] ?? ''}</span>
             </header>
-            <div className="grid min-h-[56vh] gap-8 pb-14 pt-4 md:grid-cols-[1.1fr_1fr] md:items-center">
+            <div className="grid gap-6 pb-8 pt-2 md:grid-cols-[1.1fr_1fr] md:items-center md:gap-10 md:pb-14 md:pt-6">
               <div>
-                <p className="text-[clamp(3.2rem,11vw,9rem)] font-semibold uppercase leading-[0.85] tracking-[-0.05em] text-snow">{g.group.replace(' / ', '/')}</p>
+                <p className="text-[clamp(2.6rem,8.5vw,7.5rem)] font-semibold uppercase leading-[0.85] tracking-[-0.05em] text-snow">{g.group.replace(' / ', '/')}</p>
                 <p className="mt-3 font-serif text-2xl italic text-mist">{ROLE[g.group]}</p>
               </div>
               <div>

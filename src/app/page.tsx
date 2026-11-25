@@ -187,7 +187,7 @@ export default async function Home() {
                 </a>
               </div>
             </div>
-            <div className="mt-14 flex items-center justify-between border-t border-line pt-5 font-mono text-[11px] uppercase tracking-widest text-mist">
+            <div className="mt-10 flex items-center justify-between border-t border-line pt-5 font-mono text-[11px] uppercase tracking-widest text-mist">
               <span>{profile.timezone}</span>
               <span className="hidden sm:inline">Scroll to fly through the valley</span>
               <span>34.17° N · 73.22° E</span>
@@ -213,7 +213,7 @@ export default async function Home() {
         </section>
 
         {/* ABOUT */}
-        <section id="about" className="px-5 py-28 md:px-10 md:py-40">
+        <section id="about" className="px-5 py-16 md:px-10 md:py-24">
           <div className="relative isolate mx-auto grid max-w-7xl gap-12 md:grid-cols-[0.8fr_1.2fr]">
             <div>
               <Eyebrow n="01">Base camp</Eyebrow>
@@ -246,13 +246,13 @@ export default async function Home() {
         <FieldNotes />
 
         {/* VENTURES */}
-        <section id="ventures" className="px-5 pb-28 md:px-10 md:pb-40">
+        <section id="ventures" className="px-5 pb-16 md:px-10 md:pb-24">
           <div className="relative isolate mx-auto max-w-7xl">
             <Eyebrow n="03">Ventures & flagship builds</Eyebrow>
             <h2 className="mt-6 max-w-4xl text-4xl font-medium leading-[1.02] tracking-tight md:text-6xl" data-split>
               Companies I run, products I <em className="font-serif font-normal text-glacier">own.</em>
             </h2>
-            <div className="mt-14 grid gap-5 md:grid-cols-2" data-stagger>
+            <div className="mt-10 grid gap-5 md:grid-cols-2" data-stagger>
               {ventures.map((v, i) => (
                 <article key={v.name} data-tilt className={`spot group relative overflow-hidden rounded-3xl border border-line bg-ink/90 [transform-style:preserve-3d] ${i === 0 ? 'md:col-span-2 md:grid md:grid-cols-[1.1fr_1fr]' : ''}`}>
                   <div className="relative aspect-[16/10] overflow-hidden border-b border-line md:border-b-0" style={{ background: `radial-gradient(circle at 30% 20%, ${v.accent}33, transparent 60%), #0c0e15` }}>
@@ -283,7 +283,7 @@ export default async function Home() {
         </section>
 
         {/* FEATURED WORK */}
-        <section id="work" className="px-5 pb-28 md:px-10 md:pb-40">
+        <section id="work" className="px-5 pb-16 md:px-10 md:pb-24">
           <div className="relative isolate mx-auto max-w-7xl">
             <Eyebrow n="04">Selected work</Eyebrow>
             <div className="mt-6 flex flex-wrap items-end justify-between gap-6">
@@ -292,7 +292,7 @@ export default async function Home() {
               </h2>
               <p className="max-w-sm text-mist" data-reveal>Hover a row. The green line is the proof — the test, benchmark or measurement behind the claim.</p>
             </div>
-            <ol className="mt-14 border-t border-line">
+            <ol className="mt-10 border-t border-line">
               {featured.map((p, i) => (
                 <li key={p.slug}>
                   <a
@@ -322,7 +322,7 @@ export default async function Home() {
         </section>
 
         {/* EXPLORER */}
-        <section id="explore" className="px-5 pb-28 md:px-10 md:pb-40">
+        <section id="explore" className="px-5 pb-16 md:px-10 md:pb-24">
           <div className="relative isolate mx-auto max-w-7xl rounded-[2rem] border border-line bg-night/85 p-6 md:p-12">
             <Eyebrow n="05">The full lab</Eyebrow>
             <h2 className="mt-6 text-4xl font-medium leading-[1.02] tracking-tight md:text-5xl" data-split>
@@ -335,7 +335,7 @@ export default async function Home() {
         </section>
 
         {/* PROOF RECEIPTS */}
-        <section id="receipts" className="px-5 pb-28 md:px-10 md:pb-40">
+        <section id="receipts" className="px-5 pb-16 md:px-10 md:pb-24">
           <div className="relative isolate mx-auto max-w-7xl">
             <Eyebrow n="06">Proof receipts</Eyebrow>
             <div className="mt-6 flex flex-wrap items-end justify-between gap-6">
@@ -352,7 +352,7 @@ export default async function Home() {
 
         {/* LIVE FROM GITHUB */}
         {(latest.length > 0 || recent.length > 0) && (
-          <section id="latest" className="px-5 pb-28 md:px-10 md:pb-40">
+          <section id="latest" className="px-5 pb-16 md:px-10 md:pb-24">
             <div className="relative isolate mx-auto max-w-7xl">
               <Eyebrow n="07">Live from GitHub</Eyebrow>
               <div className="mt-6 flex flex-wrap items-end justify-between gap-6">
@@ -380,7 +380,7 @@ export default async function Home() {
         )}
 
         {/* AI CAPABILITIES */}
-        <section id="ai" className="px-5 pb-28 md:px-10 md:pb-40">
+        <section id="ai" className="px-5 pb-16 md:px-10 md:pb-24">
           <div className="relative isolate mx-auto max-w-7xl">
             <Eyebrow n="08">AI engineering</Eyebrow>
             <div className="mt-6 flex flex-wrap items-end justify-between gap-6">
@@ -389,7 +389,7 @@ export default async function Home() {
               </h2>
               <p className="max-w-sm text-mist" data-reveal>Try the assistant in the corner — it is a retrieval-augmented chatbot over this site, running entirely in your browser.</p>
             </div>
-            <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-stagger>
+            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-stagger>
               {capabilities.map((c, i) => (
                 <article key={c.id} data-tilt className="spot rounded-2xl border border-line bg-ink/90 p-6 [transform-style:preserve-3d]">
                   <p className="font-mono text-[11px] text-glacier">{String(i + 1).padStart(2, '0')}</p>
@@ -410,18 +410,30 @@ export default async function Home() {
         </section>
 
         {/* SNAPCHAT LENSES */}
-        <section id="lenses" className="px-5 pb-28 md:px-10 md:pb-40">
+        <section id="lenses" className="px-5 pb-16 md:px-10 md:pb-24">
           <div className="relative isolate mx-auto max-w-7xl rounded-[2rem] border border-line bg-[radial-gradient(circle_at_85%_10%,rgba(255,252,0,0.12),transparent_45%)] bg-night/85 p-6 md:p-12">
             <Eyebrow n="09">Snapchat Lenses</Eyebrow>
             <div className="mt-6 grid gap-10 md:grid-cols-[0.8fr_1.2fr]">
               <div>
                 <h2 className="text-4xl font-medium leading-[1.02] tracking-tight md:text-5xl" data-split>Snapchat Lenses built in Lens Studio.</h2>
                 <p className="mt-5 text-mist" data-reveal>{lenses.intro}</p>
+                <dl className="mt-8 grid max-w-sm grid-cols-3 gap-px overflow-hidden rounded-2xl border border-line bg-line" data-reveal>
+                  {[
+                    [String(lenses.groups.slice(0, 3).reduce((n, g) => n + g.items.length, 0)), 'Lens games'],
+                    [String(lenses.groups.length), 'Categories'],
+                    [String(lenses.groups[2]?.items.length ?? 0), 'Bitmoji Lens+'],
+                  ].map(([n, l]) => (
+                    <div key={l} className="bg-ink px-4 py-4">
+                      <dt className="text-3xl font-medium tracking-tight text-snow">{n}</dt>
+                      <dd className="mt-1 font-mono text-[10px] uppercase tracking-widest text-mist">{l}</dd>
+                    </div>
+                  ))}
+                </dl>
                 {socials.find((s) => s.label === 'Snapchat')?.url && (
                   <a href={socials.find((s) => s.label === 'Snapchat')!.url} target="_blank" rel="noopener noreferrer" data-magnetic className="mt-6 inline-flex rounded-full bg-[#fffc00] px-5 py-3 text-sm font-medium text-night">Open on Snapchat ↗</a>
                 )}
               </div>
-              <div className="grid gap-4 sm:grid-cols-2" data-stagger>
+              <div className="grid items-start gap-4 sm:grid-cols-2" data-stagger>
                 {lenses.groups.map((g) => (
                   <div key={g.title} className="rounded-2xl border border-line bg-ink/90 p-5">
                     <h3 className="font-mono text-[11px] uppercase tracking-widest text-[#fffc00]">{g.title}</h3>
@@ -436,7 +448,7 @@ export default async function Home() {
         </section>
 
         {/* ARCADE */}
-        <section id="arcade" className="px-5 pb-28 md:px-10 md:pb-40">
+        <section id="arcade" className="px-5 pb-16 md:px-10 md:pb-24">
           <div className="relative isolate mx-auto max-w-7xl">
             <Eyebrow n="10">Arcade</Eyebrow>
             <h2 className="mt-6 text-4xl font-medium leading-[1.02] tracking-tight md:text-6xl" data-split>
@@ -455,7 +467,7 @@ export default async function Home() {
         />
 
         {/* JOURNEY */}
-        <section id="journey" className="px-5 py-28 md:px-10 md:py-40">
+        <section id="journey" className="px-5 py-16 md:px-10 md:py-24">
           <div className="relative isolate mx-auto grid max-w-7xl gap-14 md:grid-cols-[0.8fr_1.2fr]">
             <div className="md:sticky md:top-28 md:self-start">
               <Eyebrow n="11">The climb</Eyebrow>
@@ -496,7 +508,7 @@ export default async function Home() {
         </section>
 
         {/* STACK GRID */}
-        <section id="stack" className="px-5 pb-28 md:px-10 md:pb-40">
+        <section id="stack" className="px-5 pb-16 md:px-10 md:pb-24">
           <div className="relative isolate mx-auto max-w-7xl">
             <Eyebrow n="12">Toolbox</Eyebrow>
             <h2 className="mt-6 max-w-4xl text-4xl font-medium leading-[1.02] tracking-tight md:text-6xl" data-split>
@@ -515,7 +527,7 @@ export default async function Home() {
         </section>
 
         {/* CLIENTS */}
-        <section id="clients" className="px-5 pb-28 md:px-10 md:pb-40">
+        <section id="clients" className="px-5 pb-16 md:px-10 md:pb-24">
           <div className="relative isolate mx-auto max-w-7xl">
             <Eyebrow n="13">Client builds</Eyebrow>
             <h2 className="mt-6 max-w-3xl text-4xl font-medium tracking-tight md:text-5xl" data-split>Live sites, real businesses.</h2>
@@ -560,7 +572,7 @@ export default async function Home() {
         </section>
 
         {/* FAQ (AEO) */}
-        <section id="faq" className="px-5 pb-28 md:px-10 md:pb-40">
+        <section id="faq" className="px-5 pb-16 md:px-10 md:pb-24">
           <div className="relative isolate mx-auto grid max-w-7xl gap-12 md:grid-cols-[0.8fr_1.2fr]">
             <div>
               <Eyebrow n="14">Quick answers</Eyebrow>
