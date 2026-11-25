@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
+import { ThemeControls } from '@/components/ui/ThemeControls';
 
 /**
  * Scroll-to-top: a ring that fills with page progress, magnetic on desktop, launches on click.
@@ -13,18 +14,19 @@ export function ScrollTop() {
   const ring = useRef<SVGCircleElement>(null);
   const label = useRef<HTMLSpanElement>(null);
   const btn = useRef<HTMLButtonElement>(null);
+  const lastPctRef = useRef(-1);
   const R = 22, C = 2 * Math.PI * R;
 
   useEffect(() => {
-    let raf = 0, max = 1, shown = false, lastPct = -1;
+    let raf = 0, max = 1, shown = false;
     const measure = () => (max = Math.max(1, document.documentElement.scrollHeight - innerHeight));
     const paint = () => {
       raf = 0;
       const p = Math.min(1, Math.max(0, scrollY / max));
       if (p > 0.08 !== shown) { shown = p > 0.08; setShow(shown); }
       const pct = Math.round(p * 100);
-      if (pct === lastPct) return;
-      lastPct = pct;
+      if (pct === lastPctRef.current) return;
+      lastPctRef.current = pct;
       if (ring.current) ring.current.style.strokeDashoffset = String(C * (1 - p));
       if (label.current) label.current.textContent = `${pct}%`;
       btn.current?.setAttribute('aria-label', `Back to top (${pct}% scrolled)`);
@@ -38,7 +40,7 @@ export function ScrollTop() {
   }, [C]);
 
   // the ring and label refs mount with the button, so repaint once it appears
-  useEffect(() => { if (show) dispatchEvent(new Event('scroll')); }, [show]);
+  useEffect(() => { if (show) { lastPctRef.current = -1; requestAnimationFrame(() => dispatchEvent(new Event('scroll'))); } }, [show]);
 
   return (
     <AnimatePresence>
@@ -67,7 +69,7 @@ export function ScrollTop() {
         >
           <svg className="absolute inset-0 -rotate-90" viewBox="0 0 56 56" aria-hidden>
             <circle cx="28" cy="28" r={R} fill="none" stroke="#1f2431" strokeWidth="2.5" />
-            <circle ref={ring} cx="28" cy="28" r={R} fill="none" stroke="#7cf3d6" strokeWidth="2.5" strokeLinecap="round" strokeDasharray={C} strokeDashoffset={C} />
+            <circle ref={ring} cx="28" cy="28" r={R} fill="none" style={{ stroke: 'var(--color-glacier)' }} strokeWidth="2.5" strokeLinecap="round" strokeDasharray={C} strokeDashoffset={C} />
           </svg>
           <span className="relative flex flex-col items-center leading-none">
             <span className="text-base text-snow transition-transform duration-300 group-hover:-translate-y-1">↑</span>
@@ -113,9 +115,10 @@ export function MobileMenu({ links }: { links: { href: string; label: string }[]
                 </motion.li>
               ))}
             </ul>
-            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="font-mono text-[11px] uppercase tracking-widest text-mist">
-              iamqasimrazamalik@gmail.com
-            </motion.p>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="space-y-5">
+              <ThemeControls compact />
+              <p className="font-mono text-[11px] uppercase tracking-widest text-mist">iamqasimrazamalik@gmail.com</p>
+            </motion.div>
           </motion.nav>
         )}
       </AnimatePresence>
@@ -177,7 +180,7 @@ export function Preloader() {
       <div className="mx-auto w-full max-w-3xl">
         <svg viewBox="0 0 520 100" className="w-full overflow-visible" fill="none">
           <path d={RIDGE} stroke="#1f2431" strokeWidth="1.5" />
-          <path className="loader-line" pathLength={1000} d={RIDGE} stroke="#7cf3d6" strokeWidth="1.5" strokeLinejoin="round" />
+          <path className="loader-line" pathLength={1000} d={RIDGE} style={{ stroke: 'var(--color-glacier)' }} strokeWidth="1.5" strokeLinejoin="round" />
         </svg>
       </div>
       <div className="flex items-end justify-between">

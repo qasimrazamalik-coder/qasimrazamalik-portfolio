@@ -10,6 +10,11 @@ import { Arcade } from '@/components/sections/Arcade';
 import { ChatLauncher } from '@/components/ui/ChatBot';
 import { Carousel } from '@/components/ui/Carousel';
 import { FieldNotes } from '@/components/sections/FieldNotes';
+import { Tapes } from '@/components/sections/Tapes';
+import { StackLayers } from '@/components/sections/StackLayers';
+import { Receipts } from '@/components/sections/Receipts';
+import { ChapterRail } from '@/components/ui/ChapterRail';
+import { ThemeControls } from '@/components/ui/ThemeControls';
 import { licenseUrl, places, sourceUrl } from '@/content/places';
 import { MobileMenu, Preloader, ScrollTop } from '@/components/ui/Chrome';
 
@@ -33,13 +38,19 @@ function Roll({ children }: { children: string }) {
   );
 }
 
+const toUrdu = (n: string) => n.replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[Number(d)]);
+
 function Eyebrow({ n, children }: { n: string; children: string }) {
   return (
-    <p className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.25em] text-mist">
-      <span className="text-glacier">{n}</span>
-      <span className="h-px w-8 bg-line" />
-      {children}
-    </p>
+    <>
+      <span aria-hidden className="chapter-mark">{n}</span>
+      <p data-chapter={n} data-label={children} className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.25em] text-mist">
+        <span lang="ur" dir="rtl" className="font-sans text-sm normal-case tracking-normal text-glacier/80">باب {toUrdu(n)}</span>
+        <span className="text-glacier">{n}</span>
+        <span className="h-px w-8 bg-line" />
+        {children}
+      </p>
+    </>
   );
 }
 
@@ -109,6 +120,7 @@ export default async function Home() {
       <CommandPalette commands={commands} />
       <ChatLauncher />
       <ScrollTop />
+      <ChapterRail />
       <Preloader />
 
       {/* header */}
@@ -128,6 +140,7 @@ export default async function Home() {
             ))}
           </nav>
           <div className="flex items-center gap-3">
+            <div className="hidden xl:block"><ThemeControls /></div>
             <PaletteButton />
             <a href={`mailto:${profile.email}`} data-magnetic className="group hidden rounded-full bg-snow px-4 py-2 text-sm font-medium text-night sm:block">
               <span className="roll"><span>Hire me</span><span aria-hidden className="!text-night">Say hi →</span></span>
@@ -152,9 +165,19 @@ export default async function Home() {
               <span className="block text-snow/80" data-split>not promises.</span>
             </h1>
             <div className="mt-10 grid gap-8 md:grid-cols-[1.2fr_1fr] md:items-end">
-              <p className="max-w-xl text-lg leading-relaxed text-mist" data-reveal>
-                {profile.role} from {profile.location}. {profile.tagline}
-              </p>
+              <div data-reveal>
+                <p className="max-w-xl text-lg leading-relaxed text-mist">
+                  {profile.role} from {profile.location}. {profile.tagline}
+                </p>
+                <dl className="mt-6 grid max-w-xl grid-cols-[5.5rem_1fr] gap-x-4 gap-y-1.5 font-mono text-[12px]">
+                  <dt className="uppercase tracking-widest text-mist/70">Now</dt>
+                  <dd className="text-snow/90">{experience[0].role} · {experience[0].org}</dd>
+                  <dt className="uppercase tracking-widest text-mist/70">Stack</dt>
+                  <dd className="text-snow/90">Next.js · Node.js · Python · FastAPI · PostgreSQL</dd>
+                  <dt className="uppercase tracking-widest text-mist/70">Status</dt>
+                  <dd className="flex items-center gap-2 text-snow/90"><span className="h-1.5 w-1.5 rounded-full bg-glacier" />{profile.availability}</dd>
+                </dl>
+              </div>
               <div className="flex flex-wrap gap-3 md:justify-end" data-reveal>
                 <a href="#work" data-magnetic className="group rounded-full bg-glacier px-6 py-3.5 font-medium text-night">
                   <span className="roll"><span>See the work</span><span aria-hidden className="!text-night">Scroll the lab ↓</span></span>
@@ -174,7 +197,7 @@ export default async function Home() {
 
         {/* PROOF STRIP */}
         <section aria-label="At a glance" className="px-5 md:px-10">
-          <div className="mx-auto grid max-w-7xl grid-cols-2 gap-px overflow-hidden rounded-3xl border border-line bg-line md:grid-cols-4">
+          <div className="relative isolate mx-auto grid max-w-7xl grid-cols-2 gap-px overflow-hidden rounded-3xl border border-line bg-line md:grid-cols-4">
             {[
               { n: publicCount, l: 'public repositories', s: '+' },
               { n: 30, l: 'client websites delivered', s: '+' },
@@ -191,7 +214,7 @@ export default async function Home() {
 
         {/* ABOUT */}
         <section id="about" className="px-5 py-28 md:px-10 md:py-40">
-          <div className="mx-auto grid max-w-7xl gap-12 md:grid-cols-[0.8fr_1.2fr]">
+          <div className="relative isolate mx-auto grid max-w-7xl gap-12 md:grid-cols-[0.8fr_1.2fr]">
             <div>
               <Eyebrow n="01">Base camp</Eyebrow>
               <h2 className="mt-6 text-4xl font-medium leading-[1.02] tracking-tight md:text-6xl" data-split>
@@ -224,7 +247,7 @@ export default async function Home() {
 
         {/* VENTURES */}
         <section id="ventures" className="px-5 pb-28 md:px-10 md:pb-40">
-          <div className="mx-auto max-w-7xl">
+          <div className="relative isolate mx-auto max-w-7xl">
             <Eyebrow n="03">Ventures & flagship builds</Eyebrow>
             <h2 className="mt-6 max-w-4xl text-4xl font-medium leading-[1.02] tracking-tight md:text-6xl" data-split>
               Companies I run, products I <em className="font-serif font-normal text-glacier">own.</em>
@@ -261,7 +284,7 @@ export default async function Home() {
 
         {/* FEATURED WORK */}
         <section id="work" className="px-5 pb-28 md:px-10 md:pb-40">
-          <div className="mx-auto max-w-7xl">
+          <div className="relative isolate mx-auto max-w-7xl">
             <Eyebrow n="04">Selected work</Eyebrow>
             <div className="mt-6 flex flex-wrap items-end justify-between gap-6">
               <h2 className="max-w-3xl text-4xl font-medium leading-[1.02] tracking-tight md:text-6xl" data-split>
@@ -273,11 +296,9 @@ export default async function Home() {
               {featured.map((p, i) => (
                 <li key={p.slug}>
                   <a
-                    href={p.repo}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href={`/work/${p.slug}`}
                     data-cursor="view"
-                    data-cursor-label="Open"
+                    data-cursor-label="Read"
                     className="group grid grid-cols-[2.5rem_1fr] items-baseline gap-x-4 gap-y-2 border-b border-line py-7 transition-colors hover:bg-panel/85 md:grid-cols-[3rem_1.1fr_1.4fr_auto] md:px-4"
                   >
                     <span className="font-mono text-xs text-mist">{String(i + 1).padStart(2, '0')}</span>
@@ -302,7 +323,7 @@ export default async function Home() {
 
         {/* EXPLORER */}
         <section id="explore" className="px-5 pb-28 md:px-10 md:pb-40">
-          <div className="mx-auto max-w-7xl rounded-[2rem] border border-line bg-night/85 p-6 md:p-12">
+          <div className="relative isolate mx-auto max-w-7xl rounded-[2rem] border border-line bg-night/85 p-6 md:p-12">
             <Eyebrow n="05">The full lab</Eyebrow>
             <h2 className="mt-6 text-4xl font-medium leading-[1.02] tracking-tight md:text-5xl" data-split>
               {projects.length} builds. Six disciplines. Zero lorem ipsum.
@@ -313,11 +334,27 @@ export default async function Home() {
           </div>
         </section>
 
+        {/* PROOF RECEIPTS */}
+        <section id="receipts" className="px-5 pb-28 md:px-10 md:pb-40">
+          <div className="relative isolate mx-auto max-w-7xl">
+            <Eyebrow n="06">Proof receipts</Eyebrow>
+            <div className="mt-6 flex flex-wrap items-end justify-between gap-6">
+              <h2 className="max-w-3xl text-4xl font-medium leading-[1.02] tracking-tight md:text-6xl" data-split>
+                Every claim comes with a <em className="font-serif font-normal text-glacier">receipt.</em>
+              </h2>
+              <p className="max-w-sm text-mist" data-reveal>Printed straight from the repos: what was tested, what was measured. Drag through the slips.</p>
+            </div>
+            <div className="mt-12">
+              <Receipts items={featured} trackLabel={Object.fromEntries(tracks.map((t) => [t.id, t.label]))} />
+            </div>
+          </div>
+        </section>
+
         {/* LIVE FROM GITHUB */}
         {(latest.length > 0 || recent.length > 0) && (
           <section id="latest" className="px-5 pb-28 md:px-10 md:pb-40">
-            <div className="mx-auto max-w-7xl">
-              <Eyebrow n="06">Live from GitHub</Eyebrow>
+            <div className="relative isolate mx-auto max-w-7xl">
+              <Eyebrow n="07">Live from GitHub</Eyebrow>
               <div className="mt-6 flex flex-wrap items-end justify-between gap-6">
                 <h2 className="text-4xl font-medium tracking-tight md:text-5xl" data-split>Pushed to GitHub, straight from the terminal.</h2>
                 <p className="max-w-sm text-sm text-mist" data-reveal>Pulled from the GitHub API and refreshed every few hours — new public work appears here automatically.</p>
@@ -344,8 +381,8 @@ export default async function Home() {
 
         {/* AI CAPABILITIES */}
         <section id="ai" className="px-5 pb-28 md:px-10 md:pb-40">
-          <div className="mx-auto max-w-7xl">
-            <Eyebrow n="07">AI engineering</Eyebrow>
+          <div className="relative isolate mx-auto max-w-7xl">
+            <Eyebrow n="08">AI engineering</Eyebrow>
             <div className="mt-6 flex flex-wrap items-end justify-between gap-6">
               <h2 className="max-w-3xl text-4xl font-medium leading-[1.02] tracking-tight md:text-6xl" data-split>
                 Agents, MCP, vision — AI that does <em className="font-serif font-normal text-glacier">real work.</em>
@@ -374,8 +411,8 @@ export default async function Home() {
 
         {/* SNAPCHAT LENSES */}
         <section id="lenses" className="px-5 pb-28 md:px-10 md:pb-40">
-          <div className="mx-auto max-w-7xl rounded-[2rem] border border-line bg-[radial-gradient(circle_at_85%_10%,rgba(255,252,0,0.12),transparent_45%)] bg-night/85 p-6 md:p-12">
-            <Eyebrow n="08">Snapchat Lenses</Eyebrow>
+          <div className="relative isolate mx-auto max-w-7xl rounded-[2rem] border border-line bg-[radial-gradient(circle_at_85%_10%,rgba(255,252,0,0.12),transparent_45%)] bg-night/85 p-6 md:p-12">
+            <Eyebrow n="09">Snapchat Lenses</Eyebrow>
             <div className="mt-6 grid gap-10 md:grid-cols-[0.8fr_1.2fr]">
               <div>
                 <h2 className="text-4xl font-medium leading-[1.02] tracking-tight md:text-5xl" data-split>Snapchat Lenses built in Lens Studio.</h2>
@@ -400,8 +437,8 @@ export default async function Home() {
 
         {/* ARCADE */}
         <section id="arcade" className="px-5 pb-28 md:px-10 md:pb-40">
-          <div className="mx-auto max-w-7xl">
-            <Eyebrow n="09">Arcade</Eyebrow>
+          <div className="relative isolate mx-auto max-w-7xl">
+            <Eyebrow n="10">Arcade</Eyebrow>
             <h2 className="mt-6 text-4xl font-medium leading-[1.02] tracking-tight md:text-6xl" data-split>
               Three games. One <em className="font-serif font-normal text-glacier">break.</em>
             </h2>
@@ -411,26 +448,17 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* STACK MARQUEE */}
-        <section aria-label="Tech stack" className="marquee-wrap overflow-hidden border-y border-line bg-ink/90 py-6">
-          <div className="marquee">
-            {[0, 1].map((k) => (
-              <div key={k} className="flex shrink-0 items-center gap-10 pr-10" aria-hidden={k === 1}>
-                {stack.flatMap((s) => s.items).map((t) => (
-                  <span key={`${k}-${t}`} className="flex items-center gap-10 whitespace-nowrap text-2xl tracking-tight text-mist md:text-3xl">
-                    {t}<span className="text-glacier">✦</span>
-                  </span>
-                ))}
-              </div>
-            ))}
-          </div>
-        </section>
+        {/* CROSSED TAPES */}
+        <Tapes
+          proof={['Race-tested', 'Benchmarked', 'Shipped to production', 'Open to remote', 'Abbottabad → worldwide', 'Receipts in every repo']}
+          stack={stack.flatMap((g) => g.items).slice(0, 18)}
+        />
 
         {/* JOURNEY */}
         <section id="journey" className="px-5 py-28 md:px-10 md:py-40">
-          <div className="mx-auto grid max-w-7xl gap-14 md:grid-cols-[0.8fr_1.2fr]">
+          <div className="relative isolate mx-auto grid max-w-7xl gap-14 md:grid-cols-[0.8fr_1.2fr]">
             <div className="md:sticky md:top-28 md:self-start">
-              <Eyebrow n="10">The climb</Eyebrow>
+              <Eyebrow n="11">The climb</Eyebrow>
               <h2 className="mt-6 text-4xl font-medium leading-[1.02] tracking-tight md:text-6xl" data-split>From freelance builds to AI engineering.</h2>
               <ul className="mt-10 space-y-4">
                 {education.map((e) => (
@@ -447,7 +475,11 @@ export default async function Home() {
                 <li key={x.org + x.role} className="relative pb-12 last:pb-0" data-reveal>
                   <span className="absolute -left-[37px] top-1.5 h-3 w-3 rounded-full border-2 border-glacier bg-night" aria-hidden />
                   <p className="font-mono text-[11px] uppercase tracking-widest text-mist">{[x.period, x.type, x.place].filter((v, i, a) => a.indexOf(v) === i).join(' · ')}</p>
-                  <h3 className="mt-2 text-2xl font-medium tracking-tight">{x.role}</h3>
+                  <h3 className="mt-2 flex flex-wrap items-center gap-3 text-2xl font-medium tracking-tight">
+                    <span aria-hidden className="text-4xl font-semibold leading-none text-transparent [-webkit-text-stroke:1px_var(--color-mist)]">{String(experience.indexOf(x) + 1).padStart(2, '0')}</span>
+                    {x.role}
+                    {/present/i.test(x.period) && <span className="rounded-sm bg-glacier px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-widest text-night">Now</span>}
+                  </h3>
                   <p className="flex items-center gap-2 text-glacier">
                     {x.logo && <Image src={x.logo} alt="" width={24} height={24} className="h-6 w-6 rounded-md bg-snow object-contain p-0.5" />}
                     {x.org}
@@ -465,8 +497,12 @@ export default async function Home() {
 
         {/* STACK GRID */}
         <section id="stack" className="px-5 pb-28 md:px-10 md:pb-40">
-          <div className="mx-auto max-w-7xl">
-            <Eyebrow n="11">Toolbox</Eyebrow>
+          <div className="relative isolate mx-auto max-w-7xl">
+            <Eyebrow n="12">Toolbox</Eyebrow>
+            <h2 className="mt-6 max-w-4xl text-4xl font-medium leading-[1.02] tracking-tight md:text-6xl" data-split>
+              Built bottom to top, <em className="font-serif font-normal text-glacier">layer by layer.</em>
+            </h2>
+            <p className="mt-5 max-w-xl text-mist" data-reveal>Keep scrolling: each layer pins under the last until the whole stack sits at the top. Click a project to open its chapter.</p>
             <ul className="mt-8 flex flex-wrap items-center gap-3" aria-label="Core technologies">
               {techIcons.map((t) => (
                 <li key={t.name} title={t.name} className="group flex h-14 w-14 items-center justify-center rounded-2xl border border-line bg-panel/85 transition-transform duration-300 hover:-translate-y-1 hover:border-glacier">
@@ -474,25 +510,14 @@ export default async function Home() {
                 </li>
               ))}
             </ul>
-            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-stagger>
-              {stack.map((s) => (
-                <div key={s.group} data-tilt className="spot rounded-2xl border border-line bg-ink/90 p-6 [transform-style:preserve-3d]">
-                  <h3 className="font-mono text-[11px] uppercase tracking-widest text-glacier">{s.group}</h3>
-                  <ul className="mt-4 flex flex-wrap gap-2">
-                    {s.items.map((t) => (
-                      <li key={t} className="rounded-full border border-line px-3 py-1 text-sm text-snow/90">{t}</li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
+            <StackLayers groups={stack} />
           </div>
         </section>
 
         {/* CLIENTS */}
         <section id="clients" className="px-5 pb-28 md:px-10 md:pb-40">
-          <div className="mx-auto max-w-7xl">
-            <Eyebrow n="12">Client builds</Eyebrow>
+          <div className="relative isolate mx-auto max-w-7xl">
+            <Eyebrow n="13">Client builds</Eyebrow>
             <h2 className="mt-6 max-w-3xl text-4xl font-medium tracking-tight md:text-5xl" data-split>Live sites, real businesses.</h2>
             <div className="mt-10">
               <Carousel label="Client websites" autoplay={4500}>
@@ -536,9 +561,9 @@ export default async function Home() {
 
         {/* FAQ (AEO) */}
         <section id="faq" className="px-5 pb-28 md:px-10 md:pb-40">
-          <div className="mx-auto grid max-w-7xl gap-12 md:grid-cols-[0.8fr_1.2fr]">
+          <div className="relative isolate mx-auto grid max-w-7xl gap-12 md:grid-cols-[0.8fr_1.2fr]">
             <div>
-              <Eyebrow n="13">Quick answers</Eyebrow>
+              <Eyebrow n="14">Quick answers</Eyebrow>
               <h2 className="mt-6 text-4xl font-medium tracking-tight md:text-5xl" data-split>Questions recruiters ask me.</h2>
             </div>
             <div className="divide-y divide-line border-y border-line">
@@ -560,7 +585,7 @@ export default async function Home() {
           <div className="relative isolate mx-auto max-w-7xl overflow-hidden rounded-[2rem] border border-line bg-night/90 p-6 md:p-14">
             <Image src="/img/abbottabad/miranjani-sunset.jpg" alt="" fill sizes="100vw" className="kenburns -z-10 object-cover opacity-35" />
             <div className="absolute inset-0 -z-10 bg-gradient-to-r from-night via-night/85 to-night/40" />
-            <Eyebrow n="14">Summit</Eyebrow>
+            <Eyebrow n="15">Summit</Eyebrow>
             <div className="mt-8 grid gap-12 md:grid-cols-2">
               <div>
                 <h2 className="text-5xl font-medium leading-[0.95] tracking-[-0.04em] md:text-7xl" data-split>

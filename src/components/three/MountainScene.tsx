@@ -8,6 +8,15 @@ import { horizon } from '@/content/places';
 
 const MOBILE = typeof window !== 'undefined' && (window.innerWidth < 768 || matchMedia('(pointer: coarse)').matches);
 
+/* the live accent colour (CSS --color-glacier); the scene eases toward it when the theme changes */
+function accentColor() {
+  if (typeof window === 'undefined') return new THREE.Color('#7cf3d6');
+  const v = getComputedStyle(document.documentElement).getPropertyValue('--color-glacier').trim();
+  return new THREE.Color(v || '#7cf3d6');
+}
+const ACCENT = accentColor();
+if (typeof window !== 'undefined') addEventListener('accent-change', (e) => ACCENT.set((e as CustomEvent<string>).detail));
+
 /* ---------- deterministic noise (no deps) ---------- */
 function hash(x: number, y: number) {
   const s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453123;
@@ -45,7 +54,7 @@ const terrainVert = /* glsl */ `
   }
 `;
 const terrainFrag = /* glsl */ `
-  uniform float uTime; uniform vec3 uFog; uniform vec3 uBeacon; uniform float uReveal;
+  uniform float uTime; uniform vec3 uFog; uniform vec3 uBeacon; uniform float uReveal; uniform vec3 uAccent;
   varying float vH; varying vec3 vWorld; varying vec3 vNormal2;
   void main() {
     vec3 low = vec3(0.025, 0.03, 0.05);
@@ -63,7 +72,7 @@ const terrainFrag = /* glsl */ `
     float lines = abs(fract(h * 2.2 - uTime * 0.04) - 0.5);
     float contour = 1.0 - smoothstep(0.0, 0.035, lines);
     float sweep = smoothstep(uReveal - 6.0, uReveal, -vWorld.z) * (1.0 - smoothstep(uReveal, uReveal + 0.5, -vWorld.z));
-    col += vec3(0.49, 0.95, 0.84) * contour * (0.10 + sweep * 0.5) * smoothstep(0.3, 1.2, h);
+    col += uAccent * contour * (0.10 + sweep * 0.5) * smoothstep(0.3, 1.2, h);
     // beacon glow
     float bd = distance(vWorld.xz, uBeacon.xz);
     col += vec3(1.0, 0.7, 0.33) * exp(-bd * 0.9) * 0.35;
@@ -103,12 +112,13 @@ function Terrain() {
     return g;
   }, []);
   const uniforms = useMemo(
-    () => ({ uTime: { value: 0 }, uFog: { value: new THREE.Color('#06070b') }, uBeacon: { value: BEACON }, uReveal: { value: 0 } }),
+    () => ({ uTime: { value: 0 }, uFog: { value: new THREE.Color('#06070b') }, uBeacon: { value: BEACON }, uReveal: { value: 0 }, uAccent: { value: accentColor() } }),
     []
   );
   useFrame((s) => {
     if (!mat.current) return;
     mat.current.uniforms.uTime.value = s.clock.elapsedTime;
+    mat.current.uniforms.uAccent.value.lerp(ACCENT, 0.08);
     mat.current.uniforms.uReveal.value = (s.clock.elapsedTime * 6) % 60;
   });
   return (
@@ -261,7 +271,7 @@ const rangeVert = /* glsl */ `
 `;
 const rangeFrag = /* glsl */ `
   uniform sampler2D uA; uniform sampler2D uB; uniform float uMix; uniform vec2 uCoverA; uniform vec2 uCoverB;
-  uniform vec3 uFog; uniform float uFade; uniform float uTime;
+  uniform vec3 uFog; uniform float uFade; uniform float uTime; uniform vec3 uAccent;
   varying vec2 vUv; varying float vLum;
   vec2 cover(vec2 uv, vec2 s) { return (uv - 0.5) * s + 0.5; }
   void main() {
@@ -272,7 +282,7 @@ const rangeFrag = /* glsl */ `
     float lum = dot(c, vec3(0.299, 0.587, 0.114));
     // moonlit grade: cool shadows, snow keeps its glow, sky sinks toward night
     vec3 night = mix(vec3(lum) * vec3(0.42, 0.52, 0.72), c * vec3(0.55, 0.62, 0.78), 0.35);
-    night += vec3(0.49, 0.95, 0.84) * smoothstep(0.72, 0.95, lum) * 0.06;
+    night += uAccent * smoothstep(0.72, 0.95, lum) * 0.06;
     float sky = smoothstep(0.55, 0.95, vUv.y);
     night = mix(night, night * 0.35, sky);
     // fade into fog at the base and edges so the procedural terrain owns the foreground
@@ -297,7 +307,7 @@ function PhotoRange({ urls }: { urls: [string, string] }) {
     () => ({
       uA: { value: null as THREE.Texture | null }, uB: { value: null as THREE.Texture | null },
       uCoverA: { value: new THREE.Vector2(1, 1) }, uCoverB: { value: new THREE.Vector2(1, 1) },
-      uMix: { value: 0 }, uFade: { value: 0 }, uTime: { value: 0 }, uFog: { value: new THREE.Color('#06070b') },
+      uMix: { value: 0 }, uFade: { value: 0 }, uTime: { value: 0 }, uFog: { value: new THREE.Color('#06070b') }, uAccent: { value: accentColor() },
     }),
     []
   );
@@ -323,6 +333,7 @@ function PhotoRange({ urls }: { urls: [string, string] }) {
       u.uCoverA.value = uniforms.uCoverA.value; u.uCoverB.value = uniforms.uCoverB.value;
     }
     u.uTime.value = s.clock.elapsedTime;
+    u.uAccent.value.lerp(ACCENT, 0.08);
     u.uFade.value = Math.min(1, u.uFade.value + dt * 0.5);
     const target = THREE.MathUtils.smoothstep(scrollState.progress, 0.3, 0.7);
     u.uMix.value += (target - u.uMix.value) * Math.min(1, dt * 2);
@@ -356,9 +367,11 @@ function Rig() {
 function Visibility() {
   const { gl, setFrameloop } = useThree() as unknown as { gl: THREE.WebGLRenderer; setFrameloop: (m: 'always' | 'never' | 'demand') => void };
   useEffect(() => {
-    const on = () => setFrameloop(document.hidden ? 'never' : MOBILE ? 'demand' : 'always');
+    const on = () => setFrameloop(document.hidden || document.documentElement.classList.contains('motion-off') ? 'never' : MOBILE ? 'demand' : 'always');
+    on();
     document.addEventListener('visibilitychange', on);
-    return () => document.removeEventListener('visibilitychange', on);
+    addEventListener('motion-change', on);
+    return () => { document.removeEventListener('visibilitychange', on); removeEventListener('motion-change', on); };
   }, [gl, setFrameloop]);
   return null;
 }

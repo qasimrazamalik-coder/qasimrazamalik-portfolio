@@ -33,7 +33,8 @@ export function Experience() {
   const dim = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('motion-off');
+    const hasLoader = !!document.querySelector('.site-loader');
     const lowPower = (navigator as Navigator & { deviceMemory?: number }).deviceMemory !== undefined && (navigator as Navigator & { deviceMemory?: number }).deviceMemory! < 4;
     const no3d = new URLSearchParams(location.search).has('no3d');
     if (canRender3D() && !lowPower && !no3d) setShow3D(true);
@@ -45,7 +46,7 @@ export function Experience() {
     if (!reduced && window.matchMedia('(pointer: fine)').matches) {
       lenis = new Lenis({ lerp: 0.1, smoothWheel: true, wheelMultiplier: 0.95, touchMultiplier: 1 });
       lenis.on('scroll', ScrollTrigger.update);
-      if (!(window as Window & { __loaderExit?: boolean }).__loaderExit) {
+      if (hasLoader && !(window as Window & { __loaderExit?: boolean }).__loaderExit) {
         lenis.stop();
         addEventListener('loader-exit', () => lenis?.start(), { once: true });
       }
@@ -64,6 +65,17 @@ export function Experience() {
         })
       );
     }
+
+    const onMotion = (e: Event) => {
+      const on = (e as CustomEvent<boolean>).detail;
+      if (!on) { lenis?.destroy(); lenis = null; gsap.ticker.remove(onTick); return; }
+      if (lenis || !matchMedia('(pointer: fine)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      lenis = new Lenis({ lerp: 0.1, smoothWheel: true, wheelMultiplier: 0.95 });
+      lenis.on('scroll', ScrollTrigger.update);
+      gsap.ticker.remove(onTick);
+      gsap.ticker.add(onTick);
+    };
+    addEventListener('motion-change', onMotion);
 
     const toTop = () => (lenis ? lenis.scrollTo(0, { duration: 1.6, easing: (t: number) => 1 - Math.pow(1 - t, 4) }) : scrollTo({ top: 0, behavior: 'smooth' }));
     addEventListener('scroll-top', toTop);
@@ -88,7 +100,7 @@ export function Experience() {
     const ctx = gsap.context(() => {});
     // reveals start as the loading curtain lifts, so the hero choreographs with it instead of finishing behind it
     const w = window as Window & { __loaderExit?: boolean };
-    const loaderGone = w.__loaderExit ? Promise.resolve() : new Promise<void>((r) => addEventListener('loader-exit', () => r(), { once: true }));
+    const loaderGone = w.__loaderExit || !hasLoader ? Promise.resolve() : new Promise<void>((r) => addEventListener('loader-exit', () => r(), { once: true }));
     loaderGone.then(() => ctx.add(() => {
       if (reduced) return;
       /* split-line headline reveals */
@@ -206,6 +218,7 @@ export function Experience() {
 
     return () => {
       removeEventListener('scroll-top', toTop);
+      removeEventListener('motion-change', onMotion);
       removeEventListener('resize', onResize);
       st.kill();
       ctx.revert();

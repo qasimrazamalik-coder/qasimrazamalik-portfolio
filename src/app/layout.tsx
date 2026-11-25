@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { SITE_URL, profile } from '@/content/profile';
+import { themeBootScript } from '@/components/ui/ThemeControls';
 
 const description =
   'Qasim Raza Malik — AI & backend engineer and co-founder of Primeura. RAG chatbots, AI agents, MCP servers and computer vision; race-tested Node.js APIs; React, Next.js, HTML and WordPress websites.';
@@ -42,7 +43,10 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
+      </head>
       <body className="grain">
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[90] focus:rounded-lg focus:bg-glacier focus:px-4 focus:py-2 focus:text-night">
           Skip to content

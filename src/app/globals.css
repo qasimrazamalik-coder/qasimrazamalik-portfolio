@@ -113,3 +113,35 @@ section[id] { scroll-margin-top: 5rem; }
 @keyframes loader-draw { to { stroke-dashoffset: 0; } }
 html:has(.site-loader[data-phase='load']) { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) { .loader-num::after, .loader-line { animation-duration: 0.01s; } }
+
+/* ---------- accent themes (Glacier default) ---------- */
+html[data-accent='ember'] { --color-glacier: #ffb454; }
+html[data-accent='pine'] { --color-glacier: #8fe388; }
+html[data-accent='dusk'] { --color-glacier: #b9a2ff; }
+
+/* ---------- motion off: everything autonomous stops, scroll stays native ---------- */
+html.motion-off *, html.motion-off *::before, html.motion-off *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* ---------- giant outlined chapter numerals behind section headings ---------- */
+.chapter-mark {
+  position: absolute; right: -0.04em; top: -0.32em; z-index: -1; pointer-events: none; user-select: none;
+  font-weight: 600; font-size: clamp(7rem, 20vw, 19rem); line-height: 1; letter-spacing: -0.06em;
+  color: transparent; -webkit-text-stroke: 1px color-mix(in oklab, var(--color-glacier) 22%, transparent);
+}
+
+/* ---------- crossed tapes ---------- */
+.tape { will-change: transform; }
+
+/* ---------- receipts ---------- */
+.receipt {
+  --paper: #ebe7de;
+  background: var(--paper); color: #101218;
+  -webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 18px 100%;
+          mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 18px 100%;
+}
+.barcode { background: repeating-linear-gradient(90deg, #101218 0 2px, transparent 2px 4px, #101218 4px 5px, transparent 5px 8px, #101218 8px 11px, transparent 11px 13px); }

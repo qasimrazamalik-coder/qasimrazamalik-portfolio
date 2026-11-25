@@ -49,11 +49,9 @@ export function WorkExplorer({ projects, tracks }: Props) {
               transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
             >
               <a
-                href={p.repo}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={`/work/${p.slug}`}
                 data-cursor="view"
-                data-cursor-label="Code"
+                data-cursor-label="Read"
                 className="spot group flex h-full flex-col rounded-2xl border border-line bg-ink/90 p-5 transition-colors hover:border-glacier/40"
                 onPointerMove={(e) => {
                   const r = e.currentTarget.getBoundingClientRect();

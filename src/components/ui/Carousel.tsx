@@ -77,7 +77,7 @@ export function Carousel({ children, label, autoplay = 0, itemClass = 'w-[82%] s
 
   useEffect(() => {
     if (!autoplay || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const id = setInterval(() => { if (!paused.current && !document.hidden) go(1); }, autoplay);
+    const id = setInterval(() => { if (!paused.current && !document.hidden && !document.documentElement.classList.contains('motion-off')) go(1); }, autoplay);
     return () => clearInterval(id);
   }, [autoplay, go]);
 

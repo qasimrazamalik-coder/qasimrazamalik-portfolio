@@ -70,7 +70,8 @@ export function FieldNotes() {
 
       <div className="relative mx-auto mb-8 flex w-full max-w-7xl items-end justify-between gap-6 px-5 md:mb-12 md:px-10">
         <div>
-          <p className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.25em] text-mist">
+          <p data-chapter="02" data-label="Home range" className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.25em] text-mist">
+            <span lang="ur" dir="rtl" className="font-sans text-sm normal-case tracking-normal text-glacier/80">باب ۰۲</span>
             <span className="text-glacier">02</span><span className="h-px w-10 bg-line" />Home range
           </p>
           <h2 className="mt-5 max-w-3xl text-4xl font-medium leading-[1.02] tracking-tight md:text-6xl">
